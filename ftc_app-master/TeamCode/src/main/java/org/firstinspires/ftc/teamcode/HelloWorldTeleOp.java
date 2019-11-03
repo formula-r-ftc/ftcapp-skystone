@@ -37,6 +37,8 @@ public class HelloWorldTeleOp extends LinearOpMode {
             RFMotor.setPower(RFtgtPower);
             telemetry.addData(" RF Target Power", RFtgtPower);
             telemetry.addData(" RF Motor Power", RFMotor.getPower());
+
+            //making a change to the code
             telemetry.update();
 
             //Connecting the power of the RBMotor to the left stick y axis of controller 1
