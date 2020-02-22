@@ -5,8 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -24,7 +25,7 @@ public class OneStoneFoundationBlue extends OpMode{
     private DcMotor RBMotor;
     private DcMotor LFMotor;
     private DcMotor LBMotor;
-    private RevColorSensorV3 sensorColor;
+    private ColorSensor sensorColor;
     private Servo clamperA;
     private Servo clamperB;
     private Servo stoneArmL;
@@ -413,7 +414,7 @@ public class OneStoneFoundationBlue extends OpMode{
         RFMotor = hardwareMap.get(DcMotor.class, "RFMotor");
         LBMotor = hardwareMap.get(DcMotor.class, "LBMotor");
         RBMotor = hardwareMap.get(DcMotor.class, "RBMotor");
-        sensorColor = hardwareMap.get(RevColorSensorV3.class, "Color");
+        sensorColor = hardwareMap.get(ColorSensor.class, "Color");
         clamperA = hardwareMap.get(Servo.class, "clamperA");
         clamperB = hardwareMap.get(Servo.class, "clamperB");
         stoneArmClampL = hardwareMap.get(Servo.class, "stoneArmClampL");

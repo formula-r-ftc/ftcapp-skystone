@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import android.graphics.Color;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -15,7 +14,7 @@ public class RightRColorSense extends LinearOpMode {
     private DcMotor LFMotor;
     private DcMotor RBMotor;
     private DcMotor LBMotor;
-    private RevColorSensorV3 ColorSensor;
+    private ColorSensor ColorSensor;
     private ElapsedTime t1 = new ElapsedTime();
 
     static final double FORWARD_SPEED = -0.25;
@@ -54,7 +53,7 @@ public class RightRColorSense extends LinearOpMode {
         RBMotor = hardwareMap.get(DcMotor.class, "RBMotor");
         LFMotor = hardwareMap.get(DcMotor.class, "LFMotor");
         LBMotor = hardwareMap.get(DcMotor.class, "LBMotor");
-        ColorSensor = hardwareMap.get(RevColorSensorV3.class, "Color");
+        ColorSensor = hardwareMap.get(ColorSensor.class, "Color");
 
         telemetry.addData("Status" , "Intialized");
         telemetry.update();

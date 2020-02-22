@@ -2,12 +2,11 @@ package org.firstinspires.ftc.teamcode;
 
 import android.graphics.Color;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.hardware.rev.RevColorSensorV3;
-
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -28,7 +27,7 @@ public class MoveLeftFailSafe extends OpMode {
     private DcMotor LFMotor;
     private DcMotor LBMotor;
     private CRServo servoArm;
-    private RevColorSensorV3 sensorColor;
+    private ColorSensor sensorColor;
 
     private ElapsedTime t1 = new ElapsedTime();
     private ElapsedTime t2 = new ElapsedTime();
@@ -369,7 +368,7 @@ public class MoveLeftFailSafe extends OpMode {
         LBMotor = hardwareMap.get(DcMotor.class, "LBMotor");
         RBMotor = hardwareMap.get(DcMotor.class, "RBMotor");
         servoArm = hardwareMap.get(CRServo.class, "servoArm");
-        sensorColor = hardwareMap.get(RevColorSensorV3.class, "Color");
+        sensorColor = hardwareMap.get(ColorSensor.class, "Color");
 
         LFMotor.setDirection(DcMotor.Direction.FORWARD);
         RFMotor.setDirection(DcMotor.Direction.REVERSE);

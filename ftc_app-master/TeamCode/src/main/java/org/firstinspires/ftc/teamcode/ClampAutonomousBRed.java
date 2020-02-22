@@ -3,10 +3,10 @@ import android.graphics.Color;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -28,7 +28,7 @@ public class ClampAutonomousBRed extends OpMode{
     private DcMotor LFMotor;
     private DcMotor LBMotor;
     //private CRServo servoArm;
-    private RevColorSensorV3 sensorColor;
+    private ColorSensor sensorColor;
     private Servo clamperA;
     private Servo clamperB;
 
@@ -372,7 +372,7 @@ public class ClampAutonomousBRed extends OpMode{
         LBMotor = hardwareMap.get(DcMotor.class, "LBMotor");
         RBMotor = hardwareMap.get(DcMotor.class, "RBMotor");
         //servoArm = hardwareMap.get(CRServo.class, "servoArm");
-        sensorColor = hardwareMap.get(RevColorSensorV3.class, "Color");
+        sensorColor = hardwareMap.get(ColorSensor.class, "Color");
         clamperA = hardwareMap.get(Servo.class, "clamperA");
         clamperB = hardwareMap.get(Servo.class, "clamperB");
 
