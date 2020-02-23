@@ -11,16 +11,16 @@ import com.qualcomm.robotcore.hardware.CRServo;
 
 public class ServoClampTest extends LinearOpMode{
 
-    private Servo clamperA;
+    private Servo clamperL;
     private Servo testServo;
-    private Servo clamperB;
+    private Servo clamperR;
 
 
     private void connectToHardwareMap(){
         //connecting program names to hardware map names on robot controller phone
-        clamperA = hardwareMap.get(Servo.class, "clamperA");
+        clamperL = hardwareMap.get(Servo.class, "clamperA");
         // testServo = hardwareMap.get(Servo.class, "crazyTestServo");
-        clamperB = hardwareMap.get(Servo.class, "clamperB");
+        clamperR = hardwareMap.get(Servo.class, "clamperB");
 
         //Sending status to drivers station
         telemetry.addData("Status", "Initialized");
@@ -31,8 +31,8 @@ public class ServoClampTest extends LinearOpMode{
     public void runOpMode() {
         connectToHardwareMap();
 
-        telemetry.addData("ServoA Pos", clamperA.getPosition());
-        telemetry.addData("ServoB Pos", clamperB.getPosition());
+        telemetry.addData("ServoA Pos", clamperL.getPosition());
+        telemetry.addData("ServoB Pos", clamperR.getPosition());
         telemetry.update();
 
         //clamperA.setPosition(0.0);
@@ -40,17 +40,13 @@ public class ServoClampTest extends LinearOpMode{
 
         waitForStart();
 
-        telemetry.addData("ServoA Pos", clamperA.getPosition());
-        telemetry.addData("ServoB Pos", clamperB.getPosition());
+        telemetry.addData("ServoA Pos", clamperL.getPosition());
+        telemetry.addData("ServoB Pos", clamperR.getPosition());
         telemetry.update();
         while (opModeIsActive()) {
-            telemetry.addData("ServoB Pos", clamperB.getPosition());
-            telemetry.update();
-
-
             /* if (clamperA.getPosition() == 0.5) */
-            clamperA.setPosition(0.0);
-            clamperB.setPosition(0.5);
+            clamperL.setPosition(0.0);
+            clamperR.setPosition(0.5);
         }
     }
 }
