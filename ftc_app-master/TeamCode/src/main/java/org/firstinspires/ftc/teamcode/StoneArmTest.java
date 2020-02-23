@@ -24,13 +24,13 @@ public class StoneArmTest extends LinearOpMode {
     double tgtPower = 0;
     while (opModeIsActive()) {
 
-        if (gamepad1.y) {
+        if (gamepad1.x) {
             stoneArmR.setPosition(0.0);
-        } else if (gamepad1.b) {
+        } else if (gamepad1.y) {
             stoneArmClampR.setPosition(0.0);
-        } else if (gamepad1.x) {
+        } else if (gamepad1.y) {
             stoneArmL.setPosition(0.0);
-        } else if (gamepad1.a) {
+        } else if (gamepad1.x) {
             stoneArmClampL.setPosition(0.0);
         }
 
