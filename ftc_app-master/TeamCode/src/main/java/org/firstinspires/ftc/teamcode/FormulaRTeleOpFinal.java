@@ -74,7 +74,7 @@ public class FormulaRTeleOpFinal extends LinearOpMode {
         telemetry.update();
     }
 
-   /*private void moveDriveTrain() {
+   private void moveDriveTrain() {
        double vertical = 0;
        double horizontal = 0;
        double pivot = 0;
@@ -85,10 +85,10 @@ public class FormulaRTeleOpFinal extends LinearOpMode {
        RBMotor.setPower(pivot + -vertical - horizontal);
        LFMotor.setPower(-pivot + -vertical - horizontal);
        LBMotor.setPower(-pivot + (-vertical + horizontal));
-   }*/
+   }
 
 
-    private void moveDriveTrain(){
+    private void moveDriveTrainSlow(){
         if (gamepad1.left_bumper) {
             double vertical = 0;
             double horizontal = 0;
@@ -190,11 +190,11 @@ public class FormulaRTeleOpFinal extends LinearOpMode {
             runOutake();
             runServo();
             runLinearSlide();
-            //moveSlower();
+            moveDriveTrainSlow();
             twoBarLift();
             clamp();
-            //moveSlower();
             //twoBarLiftFast();
+
             if (gamepad2.b){
                 targetPosTwoBarLift = -1684;
             }
