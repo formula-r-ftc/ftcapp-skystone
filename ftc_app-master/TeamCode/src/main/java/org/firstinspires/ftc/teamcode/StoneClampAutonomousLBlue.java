@@ -407,7 +407,7 @@ public class StoneClampAutonomousLBlue extends OpMode{
 
         moveBack1 = moveBack1 + (offset * (m_skyStonePattern-1));
         moveForward1 = moveForward1 + (offset *(m_skyStonePattern-1));
-        moveBack2 = moveBack2 + (offset * (m_skyStonePattern-1));
+        moveBack2 = moveBack2 + (offset * (offset-1));
         moveForward2 = moveForward2 + (offset * (m_skyStonePattern-1));
 
     }
