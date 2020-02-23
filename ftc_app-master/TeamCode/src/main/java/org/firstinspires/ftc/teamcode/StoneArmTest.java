@@ -8,36 +8,36 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp
 public class StoneArmTest extends LinearOpMode {
 
-    private Servo stoneArmA;
-    private Servo stoneArmB;
-    private Servo stoneArmClampA;
-    private Servo stoneArmClampB;
+    private Servo stoneArmR;
+    private Servo stoneArmL;
+    private Servo stoneArmClampR;
+    private Servo stoneArmClampL;
 
     @Override
     public void runOpMode() {
 
-        stoneArmA = hardwareMap.get(Servo.class, "stoneArmA");
-        stoneArmB = hardwareMap.get(Servo.class, "stoneArmB");
-        stoneArmClampA = hardwareMap.get(Servo.class, "stoneArmClampA");
-        stoneArmClampB = hardwareMap.get(Servo.class, "stoneArmClampB");
+        stoneArmR = hardwareMap.get(Servo.class, "stoneArmR");
+        stoneArmL = hardwareMap.get(Servo.class, "stoneArmL");
+        stoneArmClampR = hardwareMap.get(Servo.class, "stoneArmClampR");
+        stoneArmClampL = hardwareMap.get(Servo.class, "stoneArmClampL");
 
     double tgtPower = 0;
     while (opModeIsActive()) {
 
         if (gamepad1.y) {
-            stoneArmA.setPosition(0.0);
+            stoneArmR.setPosition(0.0);
         } else if (gamepad1.b) {
-            stoneArmClampA.setPosition(0.0);
+            stoneArmClampR.setPosition(0.0);
         } else if (gamepad1.x) {
-            stoneArmB.setPosition(0.0);
+            stoneArmL.setPosition(0.0);
         } else if (gamepad1.a) {
-            stoneArmClampB.setPosition(0.0);
+            stoneArmClampL.setPosition(0.0);
         }
 
-        telemetry.addData("Servo Position", stoneArmA.getPosition());
-        telemetry.addData("Servo Position", stoneArmB.getPosition());
-        telemetry.addData("Servo Position", stoneArmClampA.getPosition());
-        telemetry.addData("Servo Position", stoneArmClampB.getPosition());
+        telemetry.addData("Servo Position", stoneArmR.getPosition());
+        telemetry.addData("Servo Position", stoneArmL.getPosition());
+        telemetry.addData("Servo Position", stoneArmClampR.getPosition());
+        telemetry.addData("Servo Position", stoneArmClampL.getPosition());
         telemetry.addData("Target Power", tgtPower);
         telemetry.addData("Status", "Running");
         telemetry.update();
