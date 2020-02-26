@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -19,11 +20,14 @@ public class FormulaRTeleOpFinal extends LinearOpMode {
     private DcMotor IntakeR;
     private DcMotor slidePlacer;
     private DcMotor LinearSlide;
-    private CRServo servoArm;
+  //  private CRServo servoArm;
     private CRServo grabbingServo;
     //private Servo turner;
     private DcMotor twoBarLift;
     private Servo clamper;
+
+     private ElapsedTime t1 = new ElapsedTime();
+
     static final double one = 746.66666666;
     private double targetPosTwoBarLift = 0;
     private double targetPosLinearSlide = 0;
@@ -65,14 +69,14 @@ public class FormulaRTeleOpFinal extends LinearOpMode {
         telemetry.addData("LinearSlide Motor Power", LinearSlide.getPower());
     }
 
-    private void runServo() {
+   /* private void runServo() {
         double armPower = 0;
         armPower = -this.gamepad2.left_stick_x;
         servoArm.setPower(1.25 * armPower);
         telemetry.addData("Arm power", armPower);
         telemetry.addData("Servo Power", servoArm.getPower());
         telemetry.update();
-    }
+    }*/
 
    private void moveDriveTrain() {
        double vertical = 0;
@@ -163,6 +167,33 @@ public class FormulaRTeleOpFinal extends LinearOpMode {
         }
     }
 
+    boolean IntakeToggle = false;
+
+    private void toggleIntake(){
+        if (gamepad1.b && t1.seconds() > 0.5){
+            t1.reset();
+
+            if (IntakeToggle){
+
+                IntakeToggle = false;
+            } else {
+                IntakeToggle = true;
+            }
+
+        }
+    }
+
+    private void Intake() {
+        if (IntakeToggle == true) {
+            IntakeR.setPower(0.8);
+            IntakeL.setPower(-0.8);
+        } else {
+            IntakeL.setPower(0.0);
+            IntakeR.setPower(0.0);
+        }
+    }
+
+
     @Override
     public void runOpMode () {
         RFMotor = hardwareMap.dcMotor.get("RFMotor");
@@ -171,7 +202,7 @@ public class FormulaRTeleOpFinal extends LinearOpMode {
         LBMotor = hardwareMap.dcMotor.get("LBMotor");
         IntakeL = hardwareMap.get(DcMotor.class, "IntakeL");
         IntakeR = hardwareMap.get(DcMotor.class, "IntakeR");
-        servoArm = hardwareMap.get(CRServo.class, "servoArm");
+     //   servoArm = hardwareMap.get(CRServo.class, "servoArm");
         clamper = hardwareMap.get(Servo.class, "clamper");
         twoBarLift = hardwareMap.get(DcMotor.class, "twoBarLift");
         LinearSlide = hardwareMap.get(DcMotor.class, "LinearSlide");
@@ -188,7 +219,7 @@ public class FormulaRTeleOpFinal extends LinearOpMode {
             moveDriveTrain();
             runIntake();
             runOutake();
-            runServo();
+            //runServo();
             runLinearSlide();
             moveDriveTrainSlow();
             twoBarLift();
