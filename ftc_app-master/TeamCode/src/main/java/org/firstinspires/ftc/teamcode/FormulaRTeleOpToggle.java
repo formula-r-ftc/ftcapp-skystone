@@ -177,7 +177,7 @@ public class FormulaRTeleOpToggle extends LinearOpMode {
             clamperA.setPosition(0.5);
         }
     }
-    
+
 
     private void clampFoundationB(){
         double clampFoundationBPower = 0;
