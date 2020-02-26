@@ -26,8 +26,8 @@ public class OneStoneFoundationRed extends OpMode{
     private DcMotor LFMotor;
     private DcMotor LBMotor;
     private ColorSensor sensorColor;
-    private Servo clamperA;
-    private Servo clamperB;
+    private Servo clamperL;
+    private Servo clamperR;
     private Servo stoneArmL;
     private Servo stoneArmClampL;
 
@@ -292,8 +292,8 @@ public class OneStoneFoundationRed extends OpMode{
     private void moveClampsDown(){
 
         while (t4.seconds() < 0.5){
-            clamperA.setPosition(0.75);
-            clamperB.setPosition(0.0);
+            clamperL.setPosition(0.75);
+            clamperR.setPosition(0.0);
             resetA4 = false;
         }
         if (!resetA4)
@@ -304,8 +304,8 @@ public class OneStoneFoundationRed extends OpMode{
     private void moveClampsUp(){
 
         while (t5.seconds() < 0.5){
-            clamperA.setPosition(0.0);
-            clamperB.setPosition(0.75);
+            clamperL.setPosition(0.0);
+            clamperR.setPosition(0.75);
             resetA5 = false;
         }
         if (!resetA5)
@@ -415,8 +415,8 @@ public class OneStoneFoundationRed extends OpMode{
         LBMotor = hardwareMap.get(DcMotor.class, "LBMotor");
         RBMotor = hardwareMap.get(DcMotor.class, "RBMotor");
         sensorColor = hardwareMap.get(ColorSensor.class, "Color");
-        clamperA = hardwareMap.get(Servo.class, "clamperA");
-        clamperB = hardwareMap.get(Servo.class, "clamperB");
+        clamperL = hardwareMap.get(Servo.class, "clamperL");
+        clamperR = hardwareMap.get(Servo.class, "clamperR");
         stoneArmClampL = hardwareMap.get(Servo.class, "stoneArmClampL");
         stoneArmL = hardwareMap.get(Servo.class, "stoneArmL");
         imu = hardwareMap.get(BNO055IMU.class, "emu");
