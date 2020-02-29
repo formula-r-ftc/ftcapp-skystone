@@ -292,7 +292,7 @@ public class RedFoundation extends OpMode{
     private void moveClampsDown(){
 
         while (t4.seconds() < 0.75){
-            clamperL.setPosition(0.5);
+            clamperL.setPosition(0.6);
             clamperR.setPosition(0.0);
             resetA4 = false;
         }

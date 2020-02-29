@@ -43,7 +43,7 @@ public class FormulaRTeleOpToggle extends LinearOpMode {
     //the y position of the two bar lift
     static final double twoBarY = -1250;
 
-    static final double twoBarFoundation = -2500;
+    static final double twoBarFoundation = -2100;
 
     static final double twoBarSecond = -1600;
 
@@ -167,9 +167,9 @@ public class FormulaRTeleOpToggle extends LinearOpMode {
         if (gamepad2.right_bumper) {
             clampClosed = true;
         }
-        else {
+        /*else {
             clampClosed = false;
-        }
+        }*/
     }
 
     private void clampFoundationA(){
@@ -203,6 +203,7 @@ public class FormulaRTeleOpToggle extends LinearOpMode {
 
     private void autoLevel() {
         if (placementMode) {
+            clampClosed = true;
             if (autoLevelTarget > 3) {
                 clampClosed = true;
                 targetPosLinearSlide = (((autoLevelTarget - 3) * -500) - 400);
@@ -213,23 +214,23 @@ public class FormulaRTeleOpToggle extends LinearOpMode {
                 }
             } else if (autoLevelTarget == 3) {
                 clampClosed = true;
-                targetPosLinearSlide = -1200;
+                targetPosLinearSlide = -2000;
                 if (twoBarPosA == true) {
-                    targetPosTwoBarLift = twoBarThird;
+                    targetPosTwoBarLift = (twoBarFoundation-100);
                 } else {
                     targetPosTwoBarLift = verticalPos;
                 }
             } else if (autoLevelTarget == 2) {
                 clampClosed = true;
-                targetPosLinearSlide = (((autoLevelTarget - 1) * -500) - 400);
+                targetPosLinearSlide = -1600;
                 if (twoBarPosA) {
-                    targetPosTwoBarLift = twoBarSecond;
+                    targetPosTwoBarLift = (twoBarFoundation-50);
                 } else {
                     targetPosTwoBarLift = verticalPos;
                 }
             } else if (autoLevelTarget == 1) {
                 clampClosed = true;
-                targetPosLinearSlide = -1400;
+                targetPosLinearSlide = -1050;
                 if (twoBarPosA == true) {
                     clampClosed = true;
                     targetPosTwoBarLift = twoBarFoundation;
@@ -349,8 +350,8 @@ public class FormulaRTeleOpToggle extends LinearOpMode {
             if (targetPosTwoBarLift > 0){
                 targetPosTwoBarLift = 0;
             }
-            if (targetPosTwoBarLift < -2500){
-                targetPosTwoBarLift = -2500;
+            if (targetPosTwoBarLift < -2300){
+                targetPosTwoBarLift = -2300;
             }
             LinearSlide.setPower(linearSlideEncSpeed(targetPosLinearSlide, 0.75));
             twoBarLift.setPower(twoBarLiftEncSpeed(targetPosTwoBarLift, 0.75));
