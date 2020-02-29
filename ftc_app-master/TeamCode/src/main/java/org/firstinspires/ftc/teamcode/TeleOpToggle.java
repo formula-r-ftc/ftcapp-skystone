@@ -44,7 +44,7 @@ public class TeleOpToggle extends LinearOpMode {
     //the y position of the two bar lift
     static final double twoBarY = -1250;
 
-    static final double twoBarFoundation = -1999;
+    static final double twoBarFoundation = -2100;
 
     static final double twoBarSecond = -1600;
 
@@ -168,10 +168,12 @@ public class TeleOpToggle extends LinearOpMode {
         if (gamepad2.right_bumper) {
             clampClosed = true;
         }
+        /*else {
+            clampClosed = false;
+        }*/
     }
 
     private void clampFoundationA(){
-        double clampFoundationAPower = 0;
         if (gamepad1.right_bumper) {
             clamperA.setPosition(0.0);
         } else {
@@ -179,9 +181,8 @@ public class TeleOpToggle extends LinearOpMode {
         }
     }
 
-
+    boolean clampClosed = true;
     private void clampFoundationB(){
-        double clampFoundationBPower = 0;
         if (gamepad1.right_bumper) {
             clamperB.setPosition(0.5);
         } else {
@@ -200,62 +201,57 @@ public class TeleOpToggle extends LinearOpMode {
             }
         }
     }
-    boolean clampClosed = true;
-    private void autoLevel(){
-        if (placementMode == true){
-            if (autoLevelTarget > 3){
+
+    private void autoLevel() {
+        if (placementMode) {
+            clampClosed = true;
+            if (autoLevelTarget > 3) {
                 clampClosed = true;
-                targetPosLinearSlide = (((autoLevelTarget-3)*-500)- 400);
-                if (twoBarPosA == true){
+                targetPosLinearSlide = (((autoLevelTarget - 3) * -500) - 400);
+                if (twoBarPosA) {
                     targetPosTwoBarLift = twoBarY;
-                }
-                else {
+                } else {
                     targetPosTwoBarLift = verticalPos;
                 }
-            }
-	/*else if (autoLevelTarget == 3){
-    clampClosed = true;
-	    targetPosLinearSlide = -1200;
-                if (twoBarPosA == true){
-                    targetPosTwoBarLift = twoBarThird;
-                }
-                else {
-                    targetPosTwoBarLift = verticalPos;
-                }
-	}*/
-            else if (autoLevelTarget < 3 && autoLevelTarget > 0){
+            } else if (autoLevelTarget == 3) {
                 clampClosed = true;
-                targetPosLinearSlide = (((autoLevelTarget-1)*-500)-400);
-                if (twoBarPosA == true){
-                    targetPosTwoBarLift = twoBarSecond;
+                targetPosLinearSlide = -2000;
+                if (twoBarPosA == true) {
+                    targetPosTwoBarLift = (twoBarFoundation-100);
+                } else {
+                    targetPosTwoBarLift = verticalPos;
                 }
-                else {
+            } else if (autoLevelTarget == 2) {
+                clampClosed = true;
+                targetPosLinearSlide = -1600;
+                if (twoBarPosA) {
+                    targetPosTwoBarLift = (twoBarFoundation-50);
+                } else {
+                    targetPosTwoBarLift = verticalPos;
+                }
+            } else if (autoLevelTarget == 1) {
+                clampClosed = true;
+                targetPosLinearSlide = -1050;
+                if (twoBarPosA == true) {
+                    clampClosed = true;
+                    targetPosTwoBarLift = twoBarFoundation;
+                } else {
+                    clampClosed = true;
                     targetPosTwoBarLift = verticalPos;
                 }
             }
-/*else if (autoLevelTarget = 1){
-    clampClosed = true;
-	    targetPosLinearSlide = -400;
-                if (twoBarPosA == true){
-                    targetPosTwoBarLift = twoBarFoundation;
-                }
-                else {
-                    targetPosTwoBarLift = verticalPos;
-                }*/
-        }
-
-        else {
-            targetPosTwoBarLift = initialPos;
-            targetPosLinearSlide = 0;
-            targetPosTwoBarLift = 0;
-            twoBarPosA = false;
-            clampClosed = false;
-            clamp();
-        }
+            }
+            else {
+                targetPosTwoBarLift = -70;
+                targetPosLinearSlide = 0;
+                //targetPosTwoBarLift = initialPos;
+                twoBarPosA = false;
+                clampClosed = false;
+                clamp();
+            }
     }
-
-    private double depositValue = 400;
-    private double releaseTime = 2;
+     double depositValue = 400;
+        double releaseTime = 2;
     boolean buttonPressed = false;
     private void depositBlock(){
         if (placementMode == true && gamepad2.a){
@@ -277,7 +273,7 @@ public class TeleOpToggle extends LinearOpMode {
         }
         else {
             buttonPressed = false;
-            if (placementMode == true && t9.seconds() < 5){
+            if (placementMode && t9.seconds() < 5){
                 clampClosed = false;
                 if (t9.seconds() > 0.25){
                     targetPosTwoBarLift = verticalPos;
@@ -312,10 +308,11 @@ public class TeleOpToggle extends LinearOpMode {
         clamper = hardwareMap.get(Servo.class, "clamper");
         twoBarLift = hardwareMap.get(DcMotor.class, "twoBarLift");
         LinearSlide = hardwareMap.get(DcMotor.class, "LinearSlide");
-        clamperA = hardwareMap.get(Servo.class, "clamperR");
-        clamperB = hardwareMap.get(Servo.class, "clamperL ");
+        clamperA = hardwareMap.get(Servo.class, "clamperL");
+        clamperB = hardwareMap.get(Servo.class, "clamperR ");
         //stoneArm = hardwareMap.get(Servo.class, "stoneArm");
         initialPos = twoBarLift.getCurrentPosition();
+        linearSlideInitPos = LinearSlide.getCurrentPosition();
         telemetry.addData("Two Bar Position", twoBarLift.getCurrentPosition());
         telemetry.update();
 
@@ -340,13 +337,22 @@ public class TeleOpToggle extends LinearOpMode {
                 targetPosLinearSlide = -3500;
             }
             depositBlock();
+            clamp();
             if (clampClosed) {
                 clamper.setPosition(0.5);
-            } else {
+            }
+            else {
                 clamper.setPosition(0);
             }
             if (targetPosLinearSlide > 0 ){
                 targetPosLinearSlide = 0;
+            }
+
+            if (targetPosTwoBarLift > 0){
+                targetPosTwoBarLift = 0;
+            }
+            if (targetPosTwoBarLift < -2300){
+                targetPosTwoBarLift = -2300;
             }
             LinearSlide.setPower(linearSlideEncSpeed(targetPosLinearSlide, 0.75));
             twoBarLift.setPower(twoBarLiftEncSpeed(targetPosTwoBarLift, 0.75));

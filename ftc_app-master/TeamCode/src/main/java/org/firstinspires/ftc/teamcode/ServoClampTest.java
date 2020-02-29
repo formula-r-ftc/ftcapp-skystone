@@ -18,9 +18,9 @@ public class ServoClampTest extends LinearOpMode{
 
     private void connectToHardwareMap(){
         //connecting program names to hardware map names on robot controller phone
-        clamperL = hardwareMap.get(Servo.class, "clamperA");
+        clamperL = hardwareMap.get(Servo.class, "clamperL");
         // testServo = hardwareMap.get(Servo.class, "crazyTestServo");
-        clamperR = hardwareMap.get(Servo.class, "clamperB");
+        clamperR = hardwareMap.get(Servo.class, "clamperR");
 
         //Sending status to drivers station
         telemetry.addData("Status", "Initialized");
