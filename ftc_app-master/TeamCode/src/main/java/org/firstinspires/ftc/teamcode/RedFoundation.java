@@ -1,25 +1,23 @@
 package org.firstinspires.ftc.teamcode;
 import android.graphics.Color;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 @Autonomous
 
-public class ClampAutonomousBBlue extends OpMode{
+public class RedFoundation extends OpMode{
+
 
     BNO055IMU imu;
     Orientation angles;
@@ -27,16 +25,24 @@ public class ClampAutonomousBBlue extends OpMode{
     private DcMotor RBMotor;
     private DcMotor LFMotor;
     private DcMotor LBMotor;
-    //private CRServo servoArm;
     private ColorSensor sensorColor;
     private Servo clamperL;
     private Servo clamperR;
+    private Servo stoneArmL;
+    private Servo stoneArmClampL;
+
 
     private ElapsedTime t1 = new ElapsedTime();
     private ElapsedTime t2 = new ElapsedTime();
     private ElapsedTime t3 = new ElapsedTime();
     private ElapsedTime t4 = new ElapsedTime();
     private ElapsedTime t5 = new ElapsedTime();
+    private ElapsedTime t6 = new ElapsedTime();
+    private ElapsedTime t7 = new ElapsedTime();
+    private ElapsedTime t8 = new ElapsedTime();
+    private ElapsedTime t9 = new ElapsedTime();
+    private ElapsedTime t12 = new ElapsedTime();
+
     static final double one = 746.66666666;
     static final double onepointfive =1.5*746.66666666;
     static final double two = 2 * 746.66666666;
@@ -51,17 +57,11 @@ public class ClampAutonomousBBlue extends OpMode{
     double LFPreviousValue = 0;
     double LBPreviousValue = 0;
 
-    boolean trip1 = false;
-    boolean trip2 = false;
-    boolean trip3 = false;
-    boolean trip4 = false;
-    boolean trip5 = false;
-    boolean trip6 = false;
-    boolean trip7 = false;
-
     float hsvValues[] = {0F, 0F, 0F};
     final float values[] = hsvValues;
     final double SCALE_FACTOR = 255;
+
+    boolean keepClampsDown = false;
 
     private void moveToPosition(double targetPosition) {
         double difference = targetPosition - RFMotor.getCurrentPosition();
@@ -92,6 +92,13 @@ public class ClampAutonomousBBlue extends OpMode{
         double difference = targetEncoderValue - avgEncPosition;
         telemetry.addData("difference", difference);
         double power = Range.clip(difference / 500, -maxSpeed, maxSpeed);
+        return power;
+    }
+
+    private double headingSpeed(double targetHeadingValue, double maxSpeed) {
+        double difference = targetHeadingValue - getHeading();
+        telemetry.addData("difference", difference);
+        double power = Range.clip(difference / 50, -maxSpeed, maxSpeed);
         return power;
     }
 
@@ -126,7 +133,6 @@ public class ClampAutonomousBBlue extends OpMode{
         moveOne(LBMotor, targetPosition);
     }
 
-
     private void setTankPower(double power) {
         telemetry.addData("power", power);
         RFMotor.setPower(FORWARD_SPEED);
@@ -138,16 +144,6 @@ public class ClampAutonomousBBlue extends OpMode{
     double lastAngle = 0;
     double dAngle = 0;
     private double getHeading() {
-        //angles=imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        //this.imu.getPosition();
-       /* double difference = angles.firstAngle - lastAngle;
-        if (difference > 180) {
-            dAngle = dAngle - 360;
-        }
-        else if (difference < -180) {
-            dAngle = dAngle = 360;
-        }
-         double lastAngle = angles.firstAngle;*/
         return angles.firstAngle;
     }
 
@@ -163,7 +159,23 @@ public class ClampAutonomousBBlue extends OpMode{
 
     }
 
+    private void rampUpTurn(double heading, double time, double maxSpeed) {
+        double AccelerationSlope = maxSpeed / time;
+        double power = t1.seconds() * AccelerationSlope;
+        if (Math.abs(power) < Math.abs(headingSpeed(heading, maxSpeed))) {
+            setTurnPower((headingSpeed(heading, maxSpeed)/Math.abs(headingSpeed(heading, maxSpeed))*power), 0.0);
+            telemetry.addData("Time","Using TIME");
+            telemetry.update();
+        } else {
+            setTurnPower((headingSpeed(heading, maxSpeed)), 0.0);
+            telemetry.addData("Heading", "Using HEADING" );
+            telemetry.update();
+        }
+
+    }
+
     private void rampUpSide(double length, double heading, double time, double maxSpeed) {
+
         double AccelerationSlope = maxSpeed / time;
         double power = t1.seconds() * AccelerationSlope;
         if (Math.abs(power) < Math.abs(encoderSpeedSide(length, maxSpeed))) {
@@ -177,36 +189,32 @@ public class ClampAutonomousBBlue extends OpMode{
 
     boolean tripLoopSidewaysDone = false;
     private boolean tripLoopSideways(double length){
-        double avgEncPosition = ((-LFMotor.getCurrentPosition() - LFPreviousValue) - (RBMotor.getCurrentPosition() - RBPreviousValue) + (RFMotor.getCurrentPosition() - RFPreviousValue) + (LBMotor.getCurrentPosition() - LBPreviousValue)) / 4;
+        double avgEncPosition = (-(LFMotor.getCurrentPosition() - LFPreviousValue) - (RBMotor.getCurrentPosition() - RBPreviousValue) + (RFMotor.getCurrentPosition() - RFPreviousValue) + (LBMotor.getCurrentPosition() - LBPreviousValue)) / 4;
 
         if (!tripLoopSidewaysDone && Math.abs(length - avgEncPosition) < 100) {
             tripLoopSidewaysDone = true;
             t2.reset();
         }
-        if (tripLoopSidewaysDone && t2.seconds() > 2) {
+        if (tripLoopSidewaysDone && t2.seconds() >1 ) {
             tripLoopSidewaysDone = false;
-            telemetry.addData ("IN TLSW", "SHOULD NOT SEE THIS");
-            telemetry.update();
             RFPreviousValue = RFMotor.getCurrentPosition();
             RBPreviousValue = RBMotor.getCurrentPosition();
-            LFPreviousValue = RFMotor.getCurrentPosition();
-            LBPreviousValue = RFMotor.getCurrentPosition();
+            LFPreviousValue = LFMotor.getCurrentPosition();
+            LBPreviousValue = LBMotor.getCurrentPosition();
             return true;
         }
-        else {
-            return false;
-        }
+        return false;
     }
 
     boolean tripLoopDone = false;
     private boolean tripLoop(double length) {
         double avgEncPosition = (RFMotor.getCurrentPosition() - RFPreviousValue + LFMotor.getCurrentPosition() - LFPreviousValue + RBMotor.getCurrentPosition()  - RBPreviousValue + LBMotor.getCurrentPosition() - LBPreviousValue) / 4;
 
-        if (!tripLoopDone && Math.abs(length - avgEncPosition) < 100) {
+        if (!tripLoopDone && (Math.abs(length - avgEncPosition) < 100)) {
             tripLoopDone = true;
             t2.reset();
         }
-        if (tripLoopDone && t2.seconds() > 1) {
+        if (tripLoopDone && t2.seconds() > 1 ) {
             tripLoopDone = false;
             RFPreviousValue = RFMotor.getCurrentPosition();
             RBPreviousValue = RBMotor.getCurrentPosition();
@@ -214,9 +222,7 @@ public class ClampAutonomousBBlue extends OpMode{
             LBPreviousValue = RFMotor.getCurrentPosition();
             return true;
         }
-        else {
-            return false;
-        }
+        return false;
     }
 
     boolean tripLoopTurnDone = false;
@@ -228,67 +234,16 @@ public class ClampAutonomousBBlue extends OpMode{
         }
         if (tripLoopTurnDone && t2.seconds() > 1) {
             tripLoopTurnDone = false;
+            RFPreviousValue = RFMotor.getCurrentPosition();
+            RBPreviousValue = RBMotor.getCurrentPosition();
+            LFPreviousValue = LFMotor.getCurrentPosition();
+            LBPreviousValue = LBMotor.getCurrentPosition();
             return true;
         }
         else {
             return false;
         }
     }
-
-
-    private void moveForwardAndBackwards(double length, double heading, double time, double maxSpeed) {
-        t1.reset();
-        t2.reset();
-
-        boolean done = false;
-        while (true) {
-            rampUp(length, heading, time, maxSpeed);
-            double avgEncPosition = (RFMotor.getCurrentPosition() + LFMotor.getCurrentPosition() + RBMotor.getCurrentPosition() + LBMotor.getCurrentPosition()) / 4;
-            if (!done && Math.abs(length - avgEncPosition) < 100) {
-                done = true;
-                t2.reset();
-            }
-            if (done == true && t2.seconds() > 1) {
-                break;
-            }
-        }
-    }
-
-    private void rotation(double length, double heading, double time, double maxSpeed) {
-        t1.reset();
-        t2.reset();
-
-        boolean done = false;
-        while (true) {
-            setTurnPower(turn(heading), encoderSpeed(length, maxSpeed));
-            telemetry.update();
-            if (!done && Math.abs(heading - Math.abs(getHeading())) <= 10) {
-                done = true;
-                t2.reset();
-            }
-            if (done == true && t2.seconds() > 1) {
-                break;
-            }
-        }
-    }
-    private void moveSideways(double length, double heading, double time, double maxSpeed) {
-        t1.reset();
-        t2.reset();
-
-        boolean done = false;
-        while (true) {
-            rampUpSide(length, heading, time, maxSpeed);
-            double avgEncPosition = (-LFMotor.getCurrentPosition() - RBMotor.getCurrentPosition() + RFMotor.getCurrentPosition() + LBMotor.getCurrentPosition()) / 4;
-            if (!done && Math.abs(length - avgEncPosition) < 100) {
-                done = true;
-                t2.reset();
-            }
-            if (done == true && t2.seconds() > 1) {
-                break;
-            }
-        }
-    }
-
     private void colorSense() {
         Color.RGBToHSV((int) (sensorColor.red() * SCALE_FACTOR),
                 (int) (sensorColor.green() * SCALE_FACTOR),
@@ -305,12 +260,13 @@ public class ClampAutonomousBBlue extends OpMode{
     }
     boolean sensedBlue = false;
     boolean ends = false;
-    private void forwardUntilBlue(){
+
+    private boolean forwardUntilBlue(){
         if (hsvValues[0] < 195.0 || hsvValues[0] > 225.0){
             colorSense();
             setTurnPower(turn(0.0), 0.25);
         }
-        else{
+        else {
             RFPreviousValue = RFMotor.getCurrentPosition();
             RBPreviousValue = RBMotor.getCurrentPosition();
             LFPreviousValue = RFMotor.getCurrentPosition();
@@ -318,6 +274,7 @@ public class ClampAutonomousBBlue extends OpMode{
             sensedBlue = true;
             ends = true;
         }
+        return sensedBlue;
     }
 
     private void moveBackwardSlow() {
@@ -326,104 +283,54 @@ public class ClampAutonomousBBlue extends OpMode{
         RBMotor.setPower(0.5*-FORWARD_SPEED_FAST);
         LBMotor.setPower(0.5*-FORWARD_SPEED_FAST);
     }
-    boolean reset3 = false;
-    /*boolean servoPosDown = false;
-    private void moveArmDown(){
-        if (!reset3){
-            t3.reset();
-            reset3 = true;
-        }
-        if (t3.seconds() < 1.0){
-            servoArm.setPower(FORWARD_SPEED_FAST);
-        }
-        else {
-            servoArm.setPower(0);
-            servoPosDown = true;
-            reset3 = false;
-        }
-    }*/
+
     boolean clampDown = false;
-    /*private void clamp(){
-        if (!reset3){
-            t3.reset();
-            reset3 = true;
-        }
-        if (t3.seconds() < 1.0){
-            clamperL.setPower(0.5);
-            clamperR.setPower(-0.5);
-            ;
-        }
-        else {
-            clampDown = true;
-            reset3 = false;
-        }
-    }*/
+
     boolean clampUp = false;
-   /* private void release(){
-        if (!reset3){
-            t3.reset();
-            reset3 = true;
-        }
-        if (t3.seconds() < 1.0){
-            clamperL.setPosition(0);
-            clamperR.setPosition(0);
-            ;
-        }
-        else {
-            clampUp = true;
-            reset3 = false;
-        }
-    }*/
 
-    /*boolean servoPosUp = false;
-    private void moveArmUp(){
-        if (!reset3){
-            t3.reset();
-            reset3 = true;
-        }
-        if (t3.seconds() < 1.0){
-            servoArm.setPower(-FORWARD_SPEED_FAST);
-        }
-        else {
-            servoArm.setPower(0);
-            servoPosUp = true;
-            reset3 = false;
-        }
-
-
-    }*/
     boolean resetA4 = true;
     private void moveClampsDown(){
-        t4.reset();
 
-        while (t4.seconds() < 0.9){
+        while (t4.seconds() < 0.75){
             clamperL.setPosition(0.5);
             clamperR.setPosition(0.0);
             resetA4 = false;
         }
         if (!resetA4)
             clampDown = true;
+        resetA4 = true;
+    }
+
+    private void keepClampsDown(){
+
+        while (t4.seconds() < 0.5){
+            clamperL.setPosition(0.75);
+            clamperR.setPosition(0.0);
+            resetA4 = false;
+        }
+        if (!resetA4)
+            keepClampsDown = true;
+        //clampUp = true;
     }
 
     boolean resetA5 = true;
     private void moveClampsUp(){
-        t5.reset();
 
         while (t5.seconds() < 0.5){
             clamperL.setPosition(0.0);
-            clamperR.setPosition(0.5);
+            clamperR.setPosition(0.75);
             resetA5 = false;
         }
         if (!resetA5)
             clampUp = true;
+        //clampDown = true;
     }
+
+
+
     @Override
     public void init() {
         telemetry.addData("Status", "Initialized");
-        // msStuckDetectInit=1000;
-        // msStuckDetectStop=1000;
-        //msStuckDetectInitLoop=5000;
-        //msStuckDetectStart=1000;
         msStuckDetectLoop=10000;
 
 
@@ -431,11 +338,11 @@ public class ClampAutonomousBBlue extends OpMode{
         RFMotor = hardwareMap.get(DcMotor.class, "RFMotor");
         LBMotor = hardwareMap.get(DcMotor.class, "LBMotor");
         RBMotor = hardwareMap.get(DcMotor.class, "RBMotor");
-        //servoArm = hardwareMap.get(CRServo.class, "servoArm");
         sensorColor = hardwareMap.get(ColorSensor.class, "Color");
         clamperL = hardwareMap.get(Servo.class, "clamperR");
         clamperR = hardwareMap.get(Servo.class, "clamperL");
-
+        stoneArmClampL = hardwareMap.get(Servo.class, "stoneArmClampL");
+        stoneArmL = hardwareMap.get(Servo.class, "stoneArmL");
         imu = hardwareMap.get(BNO055IMU.class, "emu");
 
         LFMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -464,6 +371,11 @@ public class ClampAutonomousBBlue extends OpMode{
 
         imu.initialize(parameters);
 
+        moveBack1 = 1.5/13.0;
+        moveForward1 = 70.0/13.0;
+        moveBack2 = 100.0/13.0;
+        moveForward2 = 100.0/13.0;
+        offset = 8.0/13.0;
 
     }
     @Override
@@ -478,9 +390,6 @@ public class ClampAutonomousBBlue extends OpMode{
         moveOne(RBMotor, 0);
         moveOne(LBMotor, 0);
 
-
-
-
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         telemetry.addData("Heading: ", angles.firstAngle);
         telemetry.addData("Roll: ", angles.secondAngle);
@@ -493,61 +402,97 @@ public class ClampAutonomousBBlue extends OpMode{
         t1.reset();
         t2.reset();
         t3.reset();
+        t12.reset();
     }
+
+
+    private boolean trip1 = false;
+    private boolean trip2 = false;
+    private boolean trip3 = false;
+    private boolean trip4 = false;
+    private boolean trip5 = false;
+    private boolean trip6 = false;
+    private boolean grabSkystone = false;
+    private boolean dropSkystone = false;
+    private boolean grabSkystone2 = false;
+    private boolean dropSkystone2 = false;
+    private boolean senseBlue = false;
+
+    double moveBack1 = 1.5/13.0;
+    double moveForward1 = 70.0/13.0;
+    double moveBack2 = 86.0/13.0;
+    double moveForward2 = 94.0/13.0;
+    double offset = 8.0/13.0;
 
     @Override
     public void loop() {
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         if(!trip1){
-            rampUpSide(-one*3.1, 0.0, 0.5, 0.5);
-            trip1 = tripLoopSideways(-one*3.1);
+            rampUpSide(one*3.1, 0.0, 0.5, 0.5);
+            trip1 = tripLoopSideways(one*3.1);
+            if (trip1){
+                t2.reset();
+            }
         }
         else if(!trip2){
-            rampUp(-one*0.875, 0.0, 0.5, 0.25);
-            trip2 = tripLoop(-one*0.875);
+            rampUp(one*-2.5, 0.0, 0.5, 0.25);
+            trip2 = tripLoop(one*-2.5);
+            if (trip2){
+                t4.reset();
+            }
         }
         else if (!clampDown){
             moveClampsDown();
+            if (clampDown){
+                t2.reset();
+            }
         }
         else if (!trip3){
-            rampUp(one*2.25, 0.0, 0.5,0.5);
-            trip3 = tripLoop(one*2.25);
+            rampUp(one, 0.0, 0.5,0.5);
+            trip3 = tripLoop(one);
+            if (trip3){
+                t4.reset();
+            }
+        }
+        else if (!keepClampsDown){
+            keepClampsDown();
+            if (keepClampsDown){
+                t2.reset();
+            }
         }
         else if (!trip4){
-            rampUp(-0.0, 90.0, 0.5, -0.5);
-            trip4 = tripLoopTurn(90.0);
+            rampUpTurn(-90.0, 0.5, 0.5);
+            trip4 = tripLoopTurn(-90.0);
+            if (trip4){
+                t2.reset();
+            }
         }
         else if (!trip5){
-            rampUp(-one*0.0625, 90.0, 0.5, 0.5);
-            trip5 = tripLoop(-one*0.0625);
+            rampUp(one*-0.75, -90.0, 0.5, 0.5);
+            trip5 = tripLoop(one*-0.75);
+            if (trip5){
+                t5.reset();
+            }
         }
         else if (!clampUp){
             moveClampsUp();
+            if (clampUp){
+                t2.reset();
+            }
         }
         else if (!trip6){
-            rampUp(one*2.85, 90.0, 0.5, 0.75);
-            trip6 = tripLoop(one*2.85);
+            rampUp(one*4.0, -90.0, 0.5, 0.75);
+            trip6 = tripLoop(one*4.0);
         }
-        /*else if (!trip7){
-            rampUpSide(-one*0.125, 0.0, 0.5, 0.5);
-            trip6 = tripLoopSideways(-one*0.125);
-        }
-        else {
-            rampUp(0.0, 90.0, 0.5, 0.5);
-        }*/
-        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
         telemetry.addData("Heading: ", getHeading());
-        telemetry.addData("cool", angles.firstAngle);
-        telemetry.addData("Timer 3", t3.seconds());
-        telemetry.addData("Roll: ", angles.secondAngle);
-        telemetry.addData("Pitch: ", angles.thirdAngle);
-        telemetry.addData("dangle", dAngle);
-        telemetry.addData("QWR", reset3);
-        telemetry.addData("Trip 4",trip4);
+        telemetry.addData("clampDown",clampDown);
         telemetry.addData("Timer 2", t2.seconds());
-        telemetry.addData("Ends", ends);
+
         telemetry.update();
         getHeading();
     }
 
 }
+
 
