@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
-public class StoneArmTest extends LinearOpMode {
+public class  StoneArmTest extends LinearOpMode {
 
     private Servo stoneArmR;
     private Servo stoneArmL;

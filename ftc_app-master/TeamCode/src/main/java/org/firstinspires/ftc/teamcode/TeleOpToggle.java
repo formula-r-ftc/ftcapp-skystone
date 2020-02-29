@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp
-public class FormulaRTeleOpToggle extends LinearOpMode {
+public class TeleOpToggle extends LinearOpMode {
     //Naming Objects For Use in Program
     private DcMotor RFMotor;
     private DcMotor RBMotor;
@@ -24,6 +24,7 @@ public class FormulaRTeleOpToggle extends LinearOpMode {
     private Servo clamper;
     private Servo clamperA;
     private Servo clamperB;
+
 
     //Creating Timers
     private ElapsedTime t1 = new ElapsedTime();
