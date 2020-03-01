@@ -528,8 +528,8 @@ public class OneStoneFoundationRed extends OpMode{
             moveArmDown();
         }
         else if (!trip1) {
-            rampUpSide(one*2.6, 0.0, 0.5, 0.85);
-            trip1 = tripLoopSideways(one*2.6);
+            rampUpSide(one*-2.6, 0.0, 0.5, 0.85);
+            trip1 = tripLoopSideways(one*-2.6);
             if (trip1){
                 t8.reset();
             }
@@ -541,19 +541,19 @@ public class OneStoneFoundationRed extends OpMode{
             keepSkystone();
         }
         else if (!trip3) {
-            rampUpSide(-one*1.0, 0.0, 0.5, 0.85);
-            trip3 = tripLoopSideways(-one*1.0);
+            rampUpSide(one*1.0, 0.0, 0.5, 0.85);
+            trip3 = tripLoopSideways(one*1.0);
         }
         else if (!trip4) {
-            rampUp(one*moveForward1+600, 0.0, 0.5, 0.85);
-            trip4 = tripLoop(one*moveForward1+600);
+            rampUp(-(one*moveForward1+600), 0.0, 0.5, 0.85);
+            trip4 = tripLoop(-(one*moveForward1+600));
             if(trip4){
                 t1.reset();
             }
         }
         else if  (!trip5) {
-            rampUpSide(one*1.75, 0.0, 0.5, 0.85);
-            trip5 = tripLoopSideways(one*1.75);
+            rampUpSide(-(one*1.75), 0.0, 0.5, 0.85);
+            trip5 = tripLoopSideways(-(one*1.75));
             if(trip5){
                 t1.reset();
                 t9.reset();
@@ -569,12 +569,12 @@ public class OneStoneFoundationRed extends OpMode{
             }
         }
         else if (!trip6) {
-            rampUpTurn(-90.0, 0.5, 0.5);
-            trip6 = tripLoopTurn(-90.0);
+            rampUpTurn(90.0, 0.5, 0.5);
+            trip6 = tripLoopTurn(90.0);
         }
         else if  (!trip7) {
-            rampUp(one*-0.3, -90.0, 0.5, 0.25);
-            trip7 = tripLoop(one*-0.3);
+            rampUp(one*0.3, -90.0, 0.5, 0.25);
+            trip7 = tripLoop(one*0.3);
             if(trip7){
                 t1.reset();
                 t4.reset();
@@ -587,23 +587,23 @@ public class OneStoneFoundationRed extends OpMode{
             }
         }
         else if(!trip8){
-            rampUp(one*1.75, -90, 0.5, 0.85);
-            trip8 = tripLoop(one*1.75);
+            rampUp(-(one*1.75), -90, 0.5, 0.85);
+            trip8 = tripLoop(-(one*1.75));
             if(trip8){
                 t1.reset();
             }
         }
         else if(!trip9) {
-            rampUpTurn(-175.0, 0.5, 0.5);
-            trip9 = tripLoopTurn(-175.0);
+            rampUpTurn(175.0, 0.5, 0.5);
+            trip9 = tripLoopTurn(175.0);
             if(trip9){
                 t1.reset();
             }
         }
 
         else if(!trip10) {
-            rampUp(one*-1.0, -175.0 ,0.5, 0.85);
-            trip10 = tripLoop(one*-1.0);
+            rampUp(one*1.0, -175.0 ,0.5, 0.85);
+            trip10 = tripLoop(one*1.0);
             if(trip10){
                 t5.reset();
             }
@@ -615,8 +615,8 @@ public class OneStoneFoundationRed extends OpMode{
             }
         }
         else if (!trip12){
-            rampUp(one*1.7, -175.0, 0.5, 0.85);
-            trip12 = tripLoop(one*1.7);
+            rampUp(-(one*1.7), -175.0, 0.5, 0.85);
+            trip12 = tripLoop(-(one*1.7));
             if(trip12){
                 t1.reset();
             }
