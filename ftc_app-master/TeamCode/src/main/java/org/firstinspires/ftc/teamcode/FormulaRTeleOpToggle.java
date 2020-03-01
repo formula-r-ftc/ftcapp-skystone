@@ -59,8 +59,7 @@ public class FormulaRTeleOpToggle extends LinearOpMode {
     //Boolean that controls whether or not the intake is running w/ a toggle switch
     boolean toggleIntakeBoolean = false;
     boolean toggleOutakeBoolean = false;
-    boolean toggleDeliveryMode = false;
-
+    boolean cappingMode = false;
 
     private void moveDriveTrain(){
         if (gamepad1.left_bumper) {
@@ -150,26 +149,10 @@ public class FormulaRTeleOpToggle extends LinearOpMode {
         }
     }
 
-   /* private void AutoLevelFoundationTwoBar(){
-        if (gamepad1.x && t7.seconds() > 0.5 ){
-            t7.reset();
-            if (!toggleTwoBarBoolean){
-                twoBarFoundationPos = true;
-                toggleTwoBarBoolean=true;
-            } else if (toggleTwoBarBoolean){
-                twoBarFoundationPos = false;
-                toggleTwoBarBoolean=false;
-            }
-        }
-    }*/
-
     private void clamp(){
         if (gamepad2.right_bumper) {
             clampClosed = true;
         }
-        /*else {
-            clampClosed = false;
-        }*/
     }
 
     private void clampFoundationA(){
@@ -204,7 +187,7 @@ public class FormulaRTeleOpToggle extends LinearOpMode {
     private void autoLevel() {
         if (placementMode) {
             clampClosed = true;
-            if (autoLevelTarget > 3) {
+            if (autoLevelTarget > 3 && autoLevelTarget < 12) {
                 clampClosed = true;
                 targetPosLinearSlide = (((autoLevelTarget - 3) * -500) - 400);
                 if (twoBarPosA) {
@@ -212,7 +195,8 @@ public class FormulaRTeleOpToggle extends LinearOpMode {
                 } else {
                     targetPosTwoBarLift = verticalPos;
                 }
-            } else if (autoLevelTarget == 3) {
+            }
+            else if (autoLevelTarget == 3) {
                 clampClosed = true;
                 targetPosLinearSlide = -2000;
                 if (twoBarPosA == true) {
@@ -220,7 +204,8 @@ public class FormulaRTeleOpToggle extends LinearOpMode {
                 } else {
                     targetPosTwoBarLift = verticalPos;
                 }
-            } else if (autoLevelTarget == 2) {
+            }
+            else if (autoLevelTarget == 2) {
                 clampClosed = true;
                 targetPosLinearSlide = -1600;
                 if (twoBarPosA) {
@@ -228,7 +213,8 @@ public class FormulaRTeleOpToggle extends LinearOpMode {
                 } else {
                     targetPosTwoBarLift = verticalPos;
                 }
-            } else if (autoLevelTarget == 1) {
+            }
+            else if (autoLevelTarget == 1) {
                 clampClosed = true;
                 targetPosLinearSlide = -1050;
                 if (twoBarPosA == true) {
@@ -239,49 +225,80 @@ public class FormulaRTeleOpToggle extends LinearOpMode {
                     targetPosTwoBarLift = verticalPos;
                 }
             }
+            else if (cappingMode){
+                targetPosLinearSlide = (((autoLevelTarget-2)*-500)-200);
+                if (twoBarPosA == true) {
+                    targetPosTwoBarLift = (verticalPos-200);
+                } else {
+                    targetPosTwoBarLift = verticalPos;
+                }
+            }
             }
             else {
                 targetPosTwoBarLift = -70;
                 targetPosLinearSlide = 0;
-                //targetPosTwoBarLift = initialPos;
                 twoBarPosA = false;
                 clampClosed = false;
                 clamp();
+                twoBarJoystick();
             }
     }
-     double depositValue = 400;
-        double releaseTime = 2;
+    double depositValue = 400;
+    double releaseTime = 1;
     boolean buttonPressed = false;
-    private void depositBlock(){
-        if (placementMode == true && gamepad2.a){
-            if (buttonPressed == false){
-                t8.reset();
-                buttonPressed=true;
-            }
-            double slope = (depositValue/releaseTime);
-            if ((t8.seconds()*slope) < 400){
-                targetPosLinearSlide += t8.seconds()*slope;
-            }
-            else {
-                targetPosLinearSlide += 400;
-            }
-            if (t8.seconds() > 2.0){
-                clampClosed = false;
-                t9.reset();
-            }
-        }
-        else {
-            buttonPressed = false;
-            if (placementMode && t9.seconds() < 5){
-                clampClosed = false;
-                if (t9.seconds() > 0.25){
-                    targetPosTwoBarLift = verticalPos;
+    private void depositBlock() {
+        if (placementMode == true && gamepad2.a) {
+            if (!cappingMode) {
+                if (buttonPressed == false) {
+                    t8.reset();
+                    buttonPressed = true;
+                }
+                double slope = (depositValue / releaseTime);
+                if ((t8.seconds() * slope) < 400) {
+                    targetPosLinearSlide += t8.seconds() * slope;
+                } else {
+                    targetPosLinearSlide += 400;
+                }
+                if (t8.seconds() > 1.5) {
+                    clampClosed = false;
+                    t9.reset();
+                } else {
+                    buttonPressed = false;
+                    if (placementMode && t9.seconds() < 5) {
+                        clampClosed = false;
+                        if (t9.seconds() > 0.25) {
+                            targetPosTwoBarLift = verticalPos;
+                        }
+                    }
                 }
             }
+            else {
+                if (!buttonPressed) {
+                    t8.reset();
+                    buttonPressed = true;
+                }
+                double slope = (133);
+                if ((t8.seconds() * slope) < 400) {
+                    targetPosLinearSlide += t8.seconds() * slope;
+                } else {
+                    targetPosLinearSlide += 400;
+                }
+                if (t8.seconds() > 3.1) {
+                    clampClosed = false;
+                    t9.reset();
+                } else {
+                    buttonPressed = false;
+                    if (placementMode && t9.seconds() < 5) {
+                        clampClosed = false;
+                        if (t9.seconds() > 0.25) {
+                            targetPosTwoBarLift = verticalPos;
+                        }
+                    }
+                }
+
+            }
         }
-
     }
-
     private void linearSlideUpIncrements(){
         if ( gamepad2.dpad_up && t2.seconds() > 0.5 ){
             t2.reset();
@@ -294,6 +311,9 @@ public class FormulaRTeleOpToggle extends LinearOpMode {
             t3.reset();
             autoLevelTarget--;
         }
+    }
+    private void twoBarJoystick(){
+        targetPosTwoBarLift = 15*gamepad2.right_stick_y;
     }
 
     @Override
@@ -309,7 +329,6 @@ public class FormulaRTeleOpToggle extends LinearOpMode {
         LinearSlide = hardwareMap.get(DcMotor.class, "LinearSlide");
         clamperA = hardwareMap.get(Servo.class, "clamperL");
         clamperB = hardwareMap.get(Servo.class, "clamperR ");
-        //stoneArm = hardwareMap.get(Servo.class, "stoneArm");
         initialPos = twoBarLift.getCurrentPosition();
         linearSlideInitPos = LinearSlide.getCurrentPosition();
         telemetry.addData("Two Bar Position", twoBarLift.getCurrentPosition());
@@ -331,9 +350,8 @@ public class FormulaRTeleOpToggle extends LinearOpMode {
             autoLevel();
             AutoLevelTwoBar();
 
-
-            if (targetPosLinearSlide < -3500 ){
-                targetPosLinearSlide = -3500;
+            if (targetPosLinearSlide < -3600 ){
+                targetPosLinearSlide = -3600;
             }
             depositBlock();
             clamp();
@@ -352,6 +370,12 @@ public class FormulaRTeleOpToggle extends LinearOpMode {
             }
             if (targetPosTwoBarLift < -2300){
                 targetPosTwoBarLift = -2300;
+            }
+            if (autoLevelTarget > 12){
+                cappingMode = true;
+            }
+            else {
+                cappingMode = false;
             }
             LinearSlide.setPower(linearSlideEncSpeed(targetPosLinearSlide, 0.75));
             twoBarLift.setPower(twoBarLiftEncSpeed(targetPosTwoBarLift, 0.75));
