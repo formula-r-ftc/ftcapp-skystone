@@ -76,8 +76,7 @@ public class TeleOpToggle extends LinearOpMode {
             LFMotor.setPower(0.3*(-pivot + -vertical - horizontal));
             LBMotor.setPower(0.3*(-pivot + (-vertical + horizontal)));
 
-            IntakeL.setPower(-0.3);
-            IntakeR.setPower(0.3);
+
         }
         else {
             double vertical = 0;
