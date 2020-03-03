@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
-public class StoneArmTest extends LinearOpMode {
+public class  StoneArmTest extends LinearOpMode {
 
     private Servo stoneArmR;
     private Servo stoneArmL;
@@ -23,6 +23,7 @@ public class StoneArmTest extends LinearOpMode {
     while (opModeIsActive()) {
 
         if (gamepad1.x) {
+<<<<<<< HEAD
             stoneArmR.setPosition(1.0);
         } else if (gamepad1.y) {
             stoneArmClampR.setPosition(1.0);
@@ -30,6 +31,15 @@ public class StoneArmTest extends LinearOpMode {
             stoneArmL.setPosition(1.0);
         } else if (gamepad1.b) {
             stoneArmClampL.setPosition(1.0);
+=======
+            stoneArmR.setPosition(0.0);
+        } else if (gamepad1.y) {
+            stoneArmClampR.setPosition(0.0);
+        } else if (gamepad1.a) {
+            stoneArmL.setPosition(0.0);
+        } else if (gamepad1.b) {
+            stoneArmClampL.setPosition(0.0);
+>>>>>>> d63119e0ba50ca1b8041baf540122df29a063ead
         }
 
         telemetry.addData("Servo Position", stoneArmR.getPosition());
