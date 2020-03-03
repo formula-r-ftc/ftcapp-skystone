@@ -243,7 +243,7 @@ public class TeleOpToggle extends LinearOpMode {
                 twoBarPosA = false;
                 clampClosed = false;
                 clamp();
-                //twoBarJoystick();
+                twoBarJoystick();
             }
     }
     double depositValue = 400;
