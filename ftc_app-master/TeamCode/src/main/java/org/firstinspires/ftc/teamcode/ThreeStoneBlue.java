@@ -15,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 @Autonomous
 
-public class TwoStoneFoundationBlue extends OpMode{
+public class ThreeStoneBlue extends OpMode{
 
 
     BNO055IMU imu;
@@ -503,7 +503,7 @@ public class TwoStoneFoundationBlue extends OpMode{
                 SkystoneFound = tripLoop(one*0.61);
             }
             else {
-              SkystoneFound = true;
+                SkystoneFound = true;
             }
             if (SkystoneFound){
                 t1.reset();
@@ -533,18 +533,10 @@ public class TwoStoneFoundationBlue extends OpMode{
             }
         }
         else if (!trip3) {
-            rampUp(-((one*moveForward1)+450), 0.0, 0.75, 0.7);
-            trip3 = tripLoop(-((one*moveForward1)+450));
+            rampUp(-((one*moveForward1)-150), 0.0, 0.75, 0.7);
+            trip3 = tripLoop(-((one*moveForward1)-150));
             if(trip3){
                 t1.reset();
-            }
-        }
-        else if  (!trip4) {
-            rampUpSide(one*1.6, 0.0, 0.75, 0.85);
-            trip4 = tripLoopSideways(one*1.6);
-            if(trip4){
-                t1.reset();
-                t9.reset();
             }
         }
         else if (!drop) {
@@ -556,66 +548,12 @@ public class TwoStoneFoundationBlue extends OpMode{
                 t1.reset();
             }
         }
-        /*else if (!trip5) {
-            rampUpTurn(-90.0, 0.75, 0.5);
-            trip5 = tripLoopTurn(-90.0);
-            if (trip5){
-                t1.reset();
-            }
-        }
-        else if  (!trip6) {
-            rampUp(one*-0.35, -90.0, 0.75, 0.25);
-            trip6 = tripLoop(one*-0.35);
-            if(trip6){
-                t4.reset();
-            }
-        }
-        else if (!clampDown){
-            moveClampsDown();
-            if(clampDown){
-                t1.reset();
-            }
-        }
-        else if(!trip7){
-            rampUp(one*1.75, -90, 0.5, 0.5);
-            trip7 = tripLoop(one*1.75);
-            if(trip7){
-                t1.reset();
-            }
-        }
-        else if(!trip8) {
-            rampUpTurn(0, 0.5, 0.5);
-            trip8 = tripLoopTurn(0);
-            if(trip8){
-                t5.reset();
-            }
-        }
 
-        /*else if(!trip9) {
-            rampUp(-one, 0,0.5, 0.85);
-            trip9 = tripLoop(-one);
-            if(trip9){
-                t5.reset();
-            }
-        }
-        else if (!clampUp){
-            moveClampsUp();
-            if(clampUp){
-                t1.reset();
-            }
-        }*/
-        else if (!trip10){
-            rampUpSide(one*-0.85, 0, 0.5, 0.85);
-            trip10 = tripLoopSideways(one*-0.85);
-            if(trip10){
-                 t1.reset();
-            }
-        }
         //Second Skystone
-        else if (!trip11) {
+        else if (!trip4) {
             rampUp((one*moveBack2)-300, 0.0, 0.5, 0.7);
-            trip11 = tripLoop((one*moveBack2)-300);
-            if (trip11){
+            trip4 = tripLoop((one*moveBack2)-300);
+            if (trip4){
                 t6.reset();
             }
         }
@@ -625,10 +563,10 @@ public class TwoStoneFoundationBlue extends OpMode{
                 t1.reset();
             }
         }
-        else if (!trip12){
-            rampUpSide(one*1.75, 0.0, 0.5, 0.7);
-            trip12 = tripLoopSideways(one*1.75);
-            if (trip12){
+        else if (!trip5){
+            rampUpSide(one*0.6, 0.0, 0.5, 0.7);
+            trip5 = tripLoopSideways(one*0.6);
+            if (trip5){
                 t8.reset();
             }
         }
@@ -641,41 +579,27 @@ public class TwoStoneFoundationBlue extends OpMode{
                 t1.reset();
             }
         }
-        else if (!trip7){
-            rampUpSide(one*-0.85, 0, 0.5, 0.7);
-            trip7 = tripLoopSideways(one* -0.85);
-            if (trip7){
+        else if (!trip6){
+            rampUpSide(one*-0.55, 0, 0.5, 0.7);
+            trip6 = tripLoopSideways(one* -0.55);
+            if (trip6){
                 t1.reset();
             }
         }
-        else if (!trip13) {
-            rampUp(-one*moveForward2, 0.0, 0.5, 0.7);
-            trip13 = tripLoop(-one*moveForward2);
-            if(trip13){
+        else if (!trip7) {
+            rampUp((-one*moveForward2)+300, 0.0, 0.5, 0.7);
+            trip7 = tripLoop((-one*moveForward2)+300);
+            if(trip7){
                 t1.reset();
             }
         }
-        else if (!trip14) {
+        else if (!trip8) {
             rampUpSide(one*1.75, 0.0, 0.5, 0.85);
-            trip14 = tripLoopSideways(one*1.75);
-            if(trip14){
+            trip8 = tripLoopSideways(one*1.75);
+            if(trip8){
                 t1.reset();
             }
         }
-        /*else if (!trip15){
-            rampUpTurn(-90, 0.5, 0.5);
-            trip15 = tripLoopTurn(-90);
-            if(trip15){
-                t1.reset();
-            }
-        }
-        else if (!trip16) {
-            rampUp(one*-1.75, 0.0, 0.5, 0.85);
-            trip16 = tripLoop(one*-1.75);
-            if(trip16){
-                t1.reset();
-            }
-        }*/
         else if (!dropTwo) {
             dropSkystoneTwo();
         }
@@ -685,35 +609,9 @@ public class TwoStoneFoundationBlue extends OpMode{
                 t1.reset();
             }
         }
-        /*else if (!trip17) {
-            rampUp(one*1.75, 0.0, 0.5, 0.85);
-            trip17 = tripLoop(one*1.75);
-            if(trip17){
-                t1.reset();
-            }
-        }
-        else if (!trip18) {
-            rampUpSide(-one*1.5, 0.0, 0.5, 0.85);
-            trip18 = tripLoopSideways(-one*1.5);
-            if(trip18){
-                t1.reset();
-            }
-        }*/
 
-
-
-        telemetry.addData("Drop",drop);
         telemetry.addData("Avg Encoder Position", ((LFMotor.getCurrentPosition() - LFPreviousValue) + (RBMotor.getCurrentPosition() - RBPreviousValue) - (RFMotor.getCurrentPosition() - RFPreviousValue) - (LBMotor.getCurrentPosition() - LBPreviousValue)) / 4);
         telemetry.addData("Heading: ", getHeading());
-        telemetry.addData("cool", angles.firstAngle);
-        telemetry.addData("Timer 3", t3.seconds());
-        telemetry.addData("Roll: ", angles.secondAngle);
-        telemetry.addData("Pitch: ", angles.thirdAngle);
-        telemetry.addData("dangle", dAngle);
-        telemetry.addData("QWR", reset3);
-        telemetry.addData("Trip 4",trip4);
-        telemetry.addData("Timer 2", t2.seconds());
-        telemetry.addData("Ends", ends);
         telemetry.update();
     }
 

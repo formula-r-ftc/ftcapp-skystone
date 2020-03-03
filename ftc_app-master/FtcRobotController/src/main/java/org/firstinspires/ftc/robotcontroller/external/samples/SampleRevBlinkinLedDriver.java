@@ -65,7 +65,7 @@ public class SampleRevBlinkinLedDriver extends OpMode {
 
     RevBlinkinLedDriver blinkinLedDriver;
     RevBlinkinLedDriver.BlinkinPattern pattern;
-
+    RevBlinkinLedDriver.BlinkinPattern patternTwo;
     Telemetry.Item patternName;
     Telemetry.Item display;
     DisplayKind displayKind;
@@ -84,6 +84,7 @@ public class SampleRevBlinkinLedDriver extends OpMode {
 
         blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
         pattern = RevBlinkinLedDriver.BlinkinPattern.RAINBOW_RAINBOW_PALETTE;
+        patternTwo = RevBlinkinLedDriver.BlinkinPattern.GREEN;
         blinkinLedDriver.setPattern(pattern);
 
         display = telemetry.addData("Display Kind: ", displayKind.toString());
