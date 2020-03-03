@@ -247,38 +247,37 @@ public class TeleOpToggle extends LinearOpMode {
             }
     }
     double depositValue = 400;
-    double releaseTime = 1;
+    double releaseTime = 2;
     boolean buttonPressed = false;
-    private void depositBlock() {
-        if (placementMode == true && gamepad2.a) {
-                if (buttonPressed == false) {
-                    t8.reset();
-                    buttonPressed = true;
-                }
-                double slope = (depositValue / releaseTime);
-                if ((t8.seconds() * slope) < 400) {
-                    targetPosLinearSlide += t8.seconds() * slope;
-                }
-                else {
-                    targetPosLinearSlide += 400;
-                }
-                if (t8.seconds() > 1.5) {
-                    clampClosed = false;
-                    t9.reset();
-                }
-                else {
-                    buttonPressed = false;
-                    if (placementMode && t9.seconds() < 5) {
-                        clampClosed = false;
-                        if (t9.seconds() > 0.25) {
-                            targetPosTwoBarLift = verticalPos;
-                        }
-                    }
+    private void depositBlock(){
+        if (placementMode == true && gamepad2.a){
+            if (buttonPressed == false){
+                t8.reset();
+                buttonPressed=true;
+            }
+            double slope = (depositValue/releaseTime);
+            if ((t8.seconds()*slope) < 400){
+                targetPosLinearSlide += t8.seconds()*slope;
+            }
+            else {
+                targetPosLinearSlide += 400;
+            }
+            if (t8.seconds() > 2.0){
+                clampClosed = false;
+                t9.reset();
+            }
+        }
+        else {
+            buttonPressed = false;
+            if (placementMode && t9.seconds() < 5){
+                clampClosed = false;
+                if (t9.seconds() > 0.25){
+                    targetPosTwoBarLift = verticalPos;
                 }
             }
+        }
 
-            }
-
+    }
     private void linearSlideUpIncrements(){
         if ( gamepad2.dpad_up && t2.seconds() > 0.5 ){
             t2.reset();
