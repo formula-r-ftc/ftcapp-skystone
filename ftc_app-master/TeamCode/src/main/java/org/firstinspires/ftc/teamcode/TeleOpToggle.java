@@ -246,8 +246,8 @@ public class TeleOpToggle extends LinearOpMode {
                 twoBarJoystick();
             }
     }
-    double depositValue = 400;
-    double releaseTime = 2;
+    double depositValue = 380;
+    double releaseTime = 1;
     boolean buttonPressed = false;
     private void depositBlock(){
         if (placementMode == true && gamepad2.a){
