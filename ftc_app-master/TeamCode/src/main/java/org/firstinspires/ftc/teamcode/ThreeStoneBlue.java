@@ -275,7 +275,7 @@ public class ThreeStoneBlue extends OpMode{
 
     private int m_skyStonePattern = 0;
     private int detectSkyStonePattern() {
-        return 2;
+        return 3;
     }
 
     boolean grab = false;
@@ -350,7 +350,7 @@ public class ThreeStoneBlue extends OpMode{
     private boolean safe = false;
 
     private void keepSkystone() {
-        stoneArmL.setPosition(0.5);
+        stoneArmL.setPosition(0.65);
         stoneArmClampL.setPosition(1.0);
         safe = true;
     }
@@ -358,7 +358,7 @@ public class ThreeStoneBlue extends OpMode{
     private boolean safeTwo = false;
 
     private void keepSkystoneTwo() {
-        stoneArmL.setPosition(0.5);
+        stoneArmL.setPosition(0.65);
         stoneArmClampL.setPosition(1.0);
         safeTwo = true;
     }
@@ -577,6 +577,10 @@ public class ThreeStoneBlue extends OpMode{
                 rampUp(one * 5.5 + offset, 0.0, 0.5, 0.6);
                 trip4 = tripLoop(one * 5.5 + offset);
             }
+            if (detectSkyStonePattern() == 3){
+                rampUp(one * 5.9 + offset, 0.0, 0.5, 0.6);
+                trip4 = tripLoop(one * 5.9 + offset);
+            }
             if (trip4){
                 t6.reset();
             }
@@ -614,10 +618,14 @@ public class ThreeStoneBlue extends OpMode{
             if (detectSkyStonePattern() == 1) {
                 rampUp(-(one * 4.6 + offset), 0.0, 0.5, 0.7);
                 trip7 = tripLoop((-(one * 4.6 + offset)));
-            }
-            else if (detectSkyStonePattern() == 2)
+            } else if (detectSkyStonePattern() == 2) {
                 rampUp(-(one * 5.6 + offset), 0.0, 0.5, 0.7);
                 trip7 = tripLoop((-(one * 5.6 + offset)));
+            }
+            else if (detectSkyStonePattern() == 3){
+                rampUp(-(one * 6.6 + offset), 0.0, 0.5, 0.7);
+                trip7 = tripLoop((-(one * 6.6 + offset)));
+            }
             if(trip7){
                 t1.reset();
             }
