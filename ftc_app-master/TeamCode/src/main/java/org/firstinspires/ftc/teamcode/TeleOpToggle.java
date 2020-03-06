@@ -247,7 +247,7 @@ public class TeleOpToggle extends LinearOpMode {
             }
     }
     double depositValue = 400;
-    double releaseTime = 2;
+    double releaseTime = 1;
     boolean buttonPressed = false;
     private void depositBlock(){
         if (placementMode == true && gamepad2.a){
@@ -262,14 +262,14 @@ public class TeleOpToggle extends LinearOpMode {
             else {
                 targetPosLinearSlide += 400;
             }
-            if (t8.seconds() > 2.0){
+            if (t8.seconds() > 1.0){
                 clampClosed = false;
                 t9.reset();
             }
         }
         else {
             buttonPressed = false;
-            if (placementMode && t9.seconds() < 5){
+            if (placementMode && t9.seconds() < 5.0){
                 clampClosed = false;
                 if (t9.seconds() > 0.25){
                     targetPosTwoBarLift = verticalPos;
