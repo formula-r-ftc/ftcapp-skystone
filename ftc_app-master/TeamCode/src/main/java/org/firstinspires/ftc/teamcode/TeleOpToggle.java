@@ -25,6 +25,10 @@ public class TeleOpToggle extends LinearOpMode {
     private Servo clamper;
     private Servo clamperA;
     private Servo clamperB;
+    private Servo stoneArmL;
+    private Servo stoneArmClampL;
+    private Servo stoneArmR;
+    private Servo stoneArmClampR;
 
 
     //Creating Timers
@@ -37,6 +41,8 @@ public class TeleOpToggle extends LinearOpMode {
     private ElapsedTime t7 = new ElapsedTime();
     private ElapsedTime t8 = new ElapsedTime();
     private ElapsedTime t9 = new ElapsedTime();
+    private ElapsedTime t12 = new ElapsedTime();
+    private ElapsedTime t15 = new ElapsedTime();
 
     //the vertical position of the two bar lift
     static final double verticalPos = -875;
@@ -61,7 +67,6 @@ public class TeleOpToggle extends LinearOpMode {
     //Boolean that controls whether or not the intake is running w/ a toggle switch
     boolean toggleIntakeBoolean = false;
     boolean toggleOutakeBoolean = false;
-    boolean cappingMode = false;
 
     private void moveDriveTrain(){
         if (gamepad1.left_bumper) {
@@ -109,32 +114,49 @@ public class TeleOpToggle extends LinearOpMode {
     }
 
     private void IntakeToggle(){
-        if (gamepad1.left_stick_button && t1.seconds() > 0.5 || gamepad2.left_trigger > 0.5 && t1.seconds() > 0.5 ){
+        if (gamepad2.left_trigger > 0.5 && t1.seconds() > 0.5 ){
             t1.reset();
-            if (!toggleIntakeBoolean){
-                IntakeL.setPower(0.5);
-                IntakeR.setPower(-0.5);
-                toggleIntakeBoolean=true;
-            } else if (toggleIntakeBoolean){
-                IntakeL.setPower(0);
-                IntakeR.setPower(0);
-                toggleIntakeBoolean=false;
-            }
+            toggleIntakeBoolean = true;
+            toggleOutakeBoolean = false;
+        }
+    }
+
+    private void IntakeButtons(){
+        if (gamepad1.a && t1.seconds() > 0.5 ){
+            toggleIntakeBoolean = true;
+            toggleOutakeBoolean = false;
+        }
+        else if (gamepad1.b){
+            toggleIntakeBoolean = false;
+            toggleOutakeBoolean = true;
+        }
+        else if (gamepad1.x){
+            toggleIntakeBoolean = false;
+            toggleOutakeBoolean = false;
+        }
+    }
+
+    private void intakeControl(){
+        if (toggleIntakeBoolean){
+            IntakeL.setPower(0.5);
+            IntakeR.setPower(-0.5);
+        }
+        else if (toggleOutakeBoolean){
+            IntakeL.setPower(-0.5);
+            IntakeR.setPower(0.5);
+
+        }
+        else if (!toggleIntakeBoolean && !toggleOutakeBoolean){
+            IntakeL.setPower(0.0);
+            IntakeR.setPower(0.0);
         }
     }
 
     private void OutakeToggle(){
-        if (gamepad1.right_stick_button && t1.seconds() > 0.5 || gamepad2.right_trigger > 0.5 && t1.seconds() > 0.5 ){
+        if (gamepad2.right_trigger > 0.5 && t1.seconds() > 0.5 ){
             t1.reset();
-            if (!toggleOutakeBoolean){
-                IntakeL.setPower(-0.5);
-                IntakeR.setPower(0.5);
-                toggleOutakeBoolean=true;
-            } else if (toggleOutakeBoolean){
-                IntakeL.setPower(0);
-                IntakeR.setPower(0);
-                toggleOutakeBoolean=false;
-            }
+            toggleOutakeBoolean=true;
+            toggleIntakeBoolean=false;
         }
     }
 
@@ -230,7 +252,6 @@ public class TeleOpToggle extends LinearOpMode {
             twoBarPosA = false;
             clampClosed = false;
             clamp();
-         //   twoBarJoystick();
         }
     }
     double depositValue = 400;
@@ -278,10 +299,24 @@ public class TeleOpToggle extends LinearOpMode {
             autoLevelTarget--;
         }
     }
-    private void twoBarJoystick(){
-        targetPosTwoBarLift = 15*gamepad2.right_stick_y;
+    int twoBarTarget = 0;
+    private void twoBarUpIncrements(){
+        if (gamepad2.dpad_right){
+            t12.reset();
+            twoBarTarget++;
+        }
     }
-    
+    private void twoBarDownIncrements(){
+        if (gamepad2.dpad_left){
+            t15.reset();
+            twoBarTarget--;
+        }
+    }
+
+    private void twoBarManual(){
+        targetPosTwoBarLift +=(twoBarTarget*-60);
+    }
+
     @Override
     public void runOpMode () {
         RFMotor = hardwareMap.dcMotor.get("RFMotor");
@@ -295,6 +330,10 @@ public class TeleOpToggle extends LinearOpMode {
         LinearSlide = hardwareMap.get(DcMotor.class, "LinearSlide");
         clamperA = hardwareMap.get(Servo.class, "clamperL");
         clamperB = hardwareMap.get(Servo.class, "clamperR ");
+        stoneArmClampL = hardwareMap.get(Servo.class, "stoneArmClampL");
+        stoneArmL = hardwareMap.get(Servo.class, "stoneArmL");
+        stoneArmClampR = hardwareMap.get(Servo.class, "stoneArmClampR");
+        stoneArmR = hardwareMap.get(Servo.class, "stoneArmR");
         BlockPusher = hardwareMap.get(Servo.class, "BlockPusher");
         initialPos = twoBarLift.getCurrentPosition();
         linearSlideInitPos = LinearSlide.getCurrentPosition();
@@ -311,17 +350,25 @@ public class TeleOpToggle extends LinearOpMode {
             clampFoundationB();
             IntakeToggle();
             OutakeToggle();
+            IntakeButtons();
+            intakeControl();
             linearSlideUpIncrements();
             linearSlideDownIncrements();
+            twoBarUpIncrements();
+            twoBarDownIncrements();
             toggle();
             autoLevel();
             AutoLevelTwoBar();
-
+            twoBarManual();
             if (targetPosLinearSlide < -3600 ){
                 targetPosLinearSlide = -3600;
             }
             depositBlock();
             clamp();
+            stoneArmL.setPosition(0.45);
+            stoneArmClampL.setPosition(1.0);
+            stoneArmR.setPosition(0.68);
+            stoneArmClampR.setPosition(1.0);
             if (clampClosed) {
                 clamper.setPosition(0.5);
             }
