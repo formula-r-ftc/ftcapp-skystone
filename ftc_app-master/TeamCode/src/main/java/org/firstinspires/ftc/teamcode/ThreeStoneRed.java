@@ -15,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 @Autonomous
 
-public class ThreeStoneBlue extends OpMode{
+public class ThreeStoneRed extends OpMode{
 
 
     BNO055IMU imu;
@@ -393,8 +393,8 @@ public class ThreeStoneBlue extends OpMode{
         sensorColor = hardwareMap.get(ColorSensor.class, "Color");
         clamperL = hardwareMap.get(Servo.class, "clamperL");
         clamperR = hardwareMap.get(Servo.class, "clamperR");
-        stoneArmClampL = hardwareMap.get(Servo.class, "stoneArmClampL");
-        stoneArmL = hardwareMap.get(Servo.class, "stoneArmL");
+        stoneArmClampL = hardwareMap.get(Servo.class, "stoneArmClampR");
+        stoneArmL = hardwareMap.get(Servo.class, "stoneArmR");
         imu = hardwareMap.get(BNO055IMU.class, "emu");
 
         LFMotor.setDirection(DcMotor.Direction.FORWARD);

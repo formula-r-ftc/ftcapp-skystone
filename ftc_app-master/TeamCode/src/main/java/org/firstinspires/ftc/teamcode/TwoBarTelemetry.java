@@ -13,10 +13,12 @@ public class TwoBarTelemetry extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        BlockPusher = hardwareMap.get(Servo.class, "stoneArmR");
+        BlockPusher = hardwareMap.get(Servo.class, "BlockPusher");
         waitForStart();
-        BlockPusher.setPosition(0.0);
-        telemetry.addData("Servo Pos", BlockPusher.getPosition());
-        telemetry.update();
+        while (opModeIsActive()) {
+            BlockPusher.setPosition(0.5);
+            telemetry.addData("Servo Pos", BlockPusher.getPosition());
+            telemetry.update();
+        }
     }
 }

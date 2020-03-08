@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class TeleOpToggle extends LinearOpMode {
     //Naming Objects For Use in Program
     private DcMotor RFMotor;
+    private Servo BlockPusher;
     private DcMotor RBMotor;
     private DcMotor LFMotor;
     private DcMotor LBMotor;
@@ -38,7 +39,7 @@ public class TeleOpToggle extends LinearOpMode {
     private ElapsedTime t9 = new ElapsedTime();
 
     //the vertical position of the two bar lift
-    static final double verticalPos = -800;
+    static final double verticalPos = -875;
 
 
     //the y position of the two bar lift
@@ -190,8 +191,7 @@ public class TeleOpToggle extends LinearOpMode {
     private void autoLevel() {
         if (placementMode) {
             clampClosed = true;
-            if (autoLevelTarget > 3 && autoLevelTarget < 12) {
-                clampClosed = true;
+            if (autoLevelTarget > 3) {
                 targetPosLinearSlide = (((autoLevelTarget - 3) * -500) - 400);
                 if (twoBarPosA) {
                     targetPosTwoBarLift = twoBarY;
@@ -200,7 +200,6 @@ public class TeleOpToggle extends LinearOpMode {
                 }
             }
             else if (autoLevelTarget == 3) {
-                clampClosed = true;
                 targetPosLinearSlide = -2000;
                 if (twoBarPosA == true) {
                     targetPosTwoBarLift = (twoBarFoundation-100);
@@ -209,7 +208,6 @@ public class TeleOpToggle extends LinearOpMode {
                 }
             }
             else if (autoLevelTarget == 2) {
-                clampClosed = true;
                 targetPosLinearSlide = -1600;
                 if (twoBarPosA) {
                     targetPosTwoBarLift = (twoBarFoundation-50);
@@ -218,33 +216,22 @@ public class TeleOpToggle extends LinearOpMode {
                 }
             }
             else if (autoLevelTarget == 1) {
-                clampClosed = true;
                 targetPosLinearSlide = -1050;
                 if (twoBarPosA == true) {
-                    clampClosed = true;
                     targetPosTwoBarLift = twoBarFoundation;
                 } else {
-                    clampClosed = true;
                     targetPosTwoBarLift = verticalPos;
                 }
             }
-            else if (cappingMode){
-                targetPosLinearSlide = (((autoLevelTarget-2)*-500)-200);
-                if (twoBarPosA == true) {
-                    targetPosTwoBarLift = (verticalPos-200);
-                } else {
-                    targetPosTwoBarLift = verticalPos;
-                }
-            }
-            }
-            else {
-                targetPosTwoBarLift = -70;
-                targetPosLinearSlide = 0;
-                twoBarPosA = false;
-                clampClosed = false;
-                clamp();
-                twoBarJoystick();
-            }
+        }
+        else {
+            targetPosTwoBarLift = -70;
+            targetPosLinearSlide = 0;
+            twoBarPosA = false;
+            clampClosed = false;
+            clamp();
+         //   twoBarJoystick();
+        }
     }
     double depositValue = 400;
     double releaseTime = 1;
@@ -308,6 +295,7 @@ public class TeleOpToggle extends LinearOpMode {
         LinearSlide = hardwareMap.get(DcMotor.class, "LinearSlide");
         clamperA = hardwareMap.get(Servo.class, "clamperL");
         clamperB = hardwareMap.get(Servo.class, "clamperR ");
+        BlockPusher = hardwareMap.get(Servo.class, "BlockPusher");
         initialPos = twoBarLift.getCurrentPosition();
         linearSlideInitPos = LinearSlide.getCurrentPosition();
         telemetry.addData("Two Bar Position", twoBarLift.getCurrentPosition());
@@ -350,11 +338,11 @@ public class TeleOpToggle extends LinearOpMode {
             if (targetPosTwoBarLift < -2300){
                 targetPosTwoBarLift = -2300;
             }
-            if (autoLevelTarget > 12){
-                cappingMode = true;
+            if (toggleOutakeBoolean){
+                BlockPusher.setPosition(0.3);
             }
             else {
-                cappingMode = false;
+                BlockPusher.setPosition(0.0);
             }
             LinearSlide.setPower(linearSlideEncSpeed(targetPosLinearSlide, 0.75));
             twoBarLift.setPower(twoBarLiftEncSpeed(targetPosTwoBarLift, 0.75));
