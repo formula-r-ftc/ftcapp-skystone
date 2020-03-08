@@ -281,7 +281,7 @@ public class TeleOpToggle extends LinearOpMode {
     private void twoBarJoystick(){
         targetPosTwoBarLift = 15*gamepad2.right_stick_y;
     }
-
+    
     @Override
     public void runOpMode () {
         RFMotor = hardwareMap.dcMotor.get("RFMotor");
