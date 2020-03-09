@@ -139,19 +139,16 @@ public class TeleOpToggle extends LinearOpMode {
     }
 
     private void intakeControl(){
-        if (toggleIntakeBoolean){
-            IntakeL.setPower(0.5);
-            IntakeR.setPower(-0.5);
-        }
-        else if (toggleOutakeBoolean){
-            IntakeL.setPower(-0.5);
-            IntakeR.setPower(0.5);
-
-        }
-        else if (!toggleIntakeBoolean && !toggleOutakeBoolean){
-            IntakeL.setPower(0.0);
-            IntakeR.setPower(0.0);
-        }
+            if (toggleIntakeBoolean) {
+                IntakeL.setPower(0.5);
+                IntakeR.setPower(-0.5);
+            } else if (toggleOutakeBoolean) {
+                IntakeL.setPower(-0.5);
+                IntakeR.setPower(0.5);
+            } else if (!toggleIntakeBoolean && !toggleOutakeBoolean) {
+                IntakeL.setPower(0.0);
+                IntakeR.setPower(0.0);
+            }
     }
 
     private void OutakeToggle(){
