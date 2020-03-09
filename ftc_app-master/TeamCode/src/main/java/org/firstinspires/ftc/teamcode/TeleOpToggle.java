@@ -214,49 +214,43 @@ public class TeleOpToggle extends LinearOpMode {
     }
 
     private void autoLevel() {
-        if (placementMode) {
-            /*if (t10.seconds() < 0.5){
-                targetPosTwoBarLift = -40;
-                clampClosed = true;
-            }
-            else {*/
-                if (autoLevelTarget > 3) {
-                    targetPosLinearSlide = (((autoLevelTarget - 3) * -500) - 400);
-                    if (twoBarPosA) {
-                        targetPosTwoBarLift = twoBarY;
-                    } else {
-                        targetPosTwoBarLift = verticalPos;
-                    }
-                } else if (autoLevelTarget == 3) {
-                    targetPosLinearSlide = -2000;
-                    if (twoBarPosA == true) {
-                        targetPosTwoBarLift = (twoBarFoundation - 100);
-                    } else {
-                        targetPosTwoBarLift = verticalPos;
-                    }
-                } else if (autoLevelTarget == 2) {
-                    targetPosLinearSlide = -1600;
-                    if (twoBarPosA) {
-                        targetPosTwoBarLift = (twoBarFoundation - 50);
-                    } else {
-                        targetPosTwoBarLift = verticalPos;
-                    }
-                } else if (autoLevelTarget == 1) {
-                    targetPosLinearSlide = -1050;
-                    if (twoBarPosA == true) {
-                        targetPosTwoBarLift = twoBarFoundation;
-                    } else {
-                        targetPosTwoBarLift = verticalPos;
-                    }
+    if (placementMode) {
+            if (autoLevelTarget > 3) {
+                targetPosLinearSlide = (((autoLevelTarget - 3) * -500) - 400);
+                if (twoBarPosA) {
+                    targetPosTwoBarLift = twoBarY;
+                } else {
+                    targetPosTwoBarLift = verticalPos;
                 }
-            //}
-        } else {
-            targetPosTwoBarLift = -50;
-            targetPosLinearSlide = 0;
-            clampClosed = false;
-            clamp();
-        }
+            } else if (autoLevelTarget == 3) {
+                targetPosLinearSlide = -2000;
+                if (twoBarPosA == true) {
+                    targetPosTwoBarLift = (twoBarFoundation - 100);
+                } else {
+                    targetPosTwoBarLift = verticalPos;
+                }
+            } else if (autoLevelTarget == 2) {
+                targetPosLinearSlide = -1600;
+                if (twoBarPosA) {
+                    targetPosTwoBarLift = (twoBarFoundation - 50);
+                } else {
+                    targetPosTwoBarLift = verticalPos;
+                }
+            } else if (autoLevelTarget == 1) {
+                targetPosLinearSlide = -1050;
+                if (twoBarPosA == true) {
+                    targetPosTwoBarLift = twoBarFoundation;
+                } else {
+                    targetPosTwoBarLift = verticalPos;
+                }
+            }
+    } else {
+        targetPosTwoBarLift = -50;
+        targetPosLinearSlide = 0;
+        clampClosed = false;
+        clamp();
     }
+}
     double depositValue = 400;
     double releaseTime = 1;
     boolean buttonPressed = false;
@@ -360,7 +354,6 @@ public class TeleOpToggle extends LinearOpMode {
             linearSlideDownIncrements();
             twoBarUpIncrements();
             twoBarDownIncrements();
-            toggle();
             autoLevel();
             AutoLevelTwoBar();
             twoBarManual();
@@ -394,7 +387,8 @@ public class TeleOpToggle extends LinearOpMode {
             }
             else {
                 BlockPusher.setPosition(0.05);
-            }
+            } 
+            toggle();
             LinearSlide.setPower(linearSlideEncSpeed(targetPosLinearSlide, 0.75));
             twoBarLift.setPower(twoBarLiftEncSpeed(targetPosTwoBarLift, 0.75));
 
