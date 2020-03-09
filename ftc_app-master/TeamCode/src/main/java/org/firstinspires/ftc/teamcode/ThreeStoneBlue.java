@@ -116,7 +116,7 @@ public class ThreeStoneBlue extends OpMode{
     }
 
     private void rampUp(double length, double heading, double time, double maxSpeed) {
-        double AccelerationSlope = maxSpeed / time;
+        double AccelerationSlope = (length/Math.abs(length))*(maxSpeed / time);
         double power = t1.seconds() * AccelerationSlope;
         if (Math.abs(power) < Math.abs(encoderSpeed(length, maxSpeed))) {
             setTurnPower(turn(heading), power);
@@ -144,7 +144,7 @@ public class ThreeStoneBlue extends OpMode{
 
     private void rampUpSide(double length, double heading, double time, double maxSpeed) {
 
-        double AccelerationSlope = maxSpeed / time;
+        double AccelerationSlope =(length/Math.abs(length))*(maxSpeed / time);
         double power = t1.seconds() * AccelerationSlope;
         if (Math.abs(power) < Math.abs(encoderSpeedSide(length, maxSpeed))) {
             driveSideways(turn(heading), power);
@@ -579,7 +579,7 @@ public class ThreeStoneBlue extends OpMode{
             }
             if (detectSkyStonePattern() == 3){
                 rampUp(one * 5.9 + offset, 0.0, 0.5, 0.6);
-                trip4 = tripLoop(one * 5.9 + offset);
+                trip4 = tripLoop(one * 6.5 + offset);
             }
             if (trip4){
                 t6.reset();
@@ -646,8 +646,8 @@ public class ThreeStoneBlue extends OpMode{
             }
         }
         else if (!trip8){
-            rampUp(one*0.5, 0, 0.5, 0.6);
-            trip8 = tripLoop(one*0.5);
+            rampUp(one*0.85, 0, 0.5, 0.6);
+            trip8 = tripLoop(one*0.85);
         }
         else{
             rampUp(0.0, 0, 0.0, 0.1);

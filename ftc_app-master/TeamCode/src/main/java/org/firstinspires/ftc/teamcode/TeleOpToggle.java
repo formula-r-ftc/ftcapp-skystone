@@ -41,7 +41,9 @@ public class TeleOpToggle extends LinearOpMode {
     private ElapsedTime t7 = new ElapsedTime();
     private ElapsedTime t8 = new ElapsedTime();
     private ElapsedTime t9 = new ElapsedTime();
+    private ElapsedTime t10 = new ElapsedTime();
     private ElapsedTime t12 = new ElapsedTime();
+    private ElapsedTime t14 = new ElapsedTime();
     private ElapsedTime t15 = new ElapsedTime();
 
     //the vertical position of the two bar lift
@@ -205,6 +207,7 @@ public class TeleOpToggle extends LinearOpMode {
                 placementMode = false;
             }
             else if (placementMode == false){
+                t10.reset();
                 placementMode = true;
             }
         }
@@ -212,44 +215,44 @@ public class TeleOpToggle extends LinearOpMode {
 
     private void autoLevel() {
         if (placementMode) {
-            clampClosed = true;
-            if (autoLevelTarget > 3) {
-                targetPosLinearSlide = (((autoLevelTarget - 3) * -500) - 400);
-                if (twoBarPosA) {
-                    targetPosTwoBarLift = twoBarY;
-                } else {
-                    targetPosTwoBarLift = verticalPos;
-                }
+            /*if (t10.seconds() < 0.5){
+                targetPosTwoBarLift = -40;
+                clampClosed = true;
             }
-            else if (autoLevelTarget == 3) {
-                targetPosLinearSlide = -2000;
-                if (twoBarPosA == true) {
-                    targetPosTwoBarLift = (twoBarFoundation-100);
-                } else {
-                    targetPosTwoBarLift = verticalPos;
+            else {*/
+                if (autoLevelTarget > 3) {
+                    targetPosLinearSlide = (((autoLevelTarget - 3) * -500) - 400);
+                    if (twoBarPosA) {
+                        targetPosTwoBarLift = twoBarY;
+                    } else {
+                        targetPosTwoBarLift = verticalPos;
+                    }
+                } else if (autoLevelTarget == 3) {
+                    targetPosLinearSlide = -2000;
+                    if (twoBarPosA == true) {
+                        targetPosTwoBarLift = (twoBarFoundation - 100);
+                    } else {
+                        targetPosTwoBarLift = verticalPos;
+                    }
+                } else if (autoLevelTarget == 2) {
+                    targetPosLinearSlide = -1600;
+                    if (twoBarPosA) {
+                        targetPosTwoBarLift = (twoBarFoundation - 50);
+                    } else {
+                        targetPosTwoBarLift = verticalPos;
+                    }
+                } else if (autoLevelTarget == 1) {
+                    targetPosLinearSlide = -1050;
+                    if (twoBarPosA == true) {
+                        targetPosTwoBarLift = twoBarFoundation;
+                    } else {
+                        targetPosTwoBarLift = verticalPos;
+                    }
                 }
-            }
-            else if (autoLevelTarget == 2) {
-                targetPosLinearSlide = -1600;
-                if (twoBarPosA) {
-                    targetPosTwoBarLift = (twoBarFoundation-50);
-                } else {
-                    targetPosTwoBarLift = verticalPos;
-                }
-            }
-            else if (autoLevelTarget == 1) {
-                targetPosLinearSlide = -1050;
-                if (twoBarPosA == true) {
-                    targetPosTwoBarLift = twoBarFoundation;
-                } else {
-                    targetPosTwoBarLift = verticalPos;
-                }
-            }
-        }
-        else {
-            targetPosTwoBarLift = -70;
+            //}
+        } else {
+            targetPosTwoBarLift = -50;
             targetPosLinearSlide = 0;
-            twoBarPosA = false;
             clampClosed = false;
             clamp();
         }
@@ -277,9 +280,10 @@ public class TeleOpToggle extends LinearOpMode {
         }
         else {
             buttonPressed = false;
-            if (placementMode && t9.seconds() < 5.0){
+            if (placementMode && t9.seconds() < 10.0){
                 clampClosed = false;
                 if (t9.seconds() > 0.25){
+                    twoBarPosA = false;
                     targetPosTwoBarLift = verticalPos;
                 }
             }
@@ -301,20 +305,20 @@ public class TeleOpToggle extends LinearOpMode {
     }
     int twoBarTarget = 0;
     private void twoBarUpIncrements(){
-        if (gamepad2.dpad_right){
+        if (gamepad2.dpad_right && t14.seconds() > 0.5){
             t12.reset();
             twoBarTarget++;
         }
     }
     private void twoBarDownIncrements(){
-        if (gamepad2.dpad_left){
+        if (gamepad2.dpad_left && t14.seconds() > 0.5){
             t15.reset();
             twoBarTarget--;
         }
     }
 
     private void twoBarManual(){
-        targetPosTwoBarLift +=(twoBarTarget*-60);
+        targetPosTwoBarLift += gamepad2.right_stick_y*-100;
     }
 
     @Override
@@ -389,7 +393,7 @@ public class TeleOpToggle extends LinearOpMode {
                 BlockPusher.setPosition(0.3);
             }
             else {
-                BlockPusher.setPosition(0.0);
+                BlockPusher.setPosition(0.05);
             }
             LinearSlide.setPower(linearSlideEncSpeed(targetPosLinearSlide, 0.75));
             twoBarLift.setPower(twoBarLiftEncSpeed(targetPosTwoBarLift, 0.75));
@@ -400,6 +404,7 @@ public class TeleOpToggle extends LinearOpMode {
             telemetry.addData("Target Position - Two Bar Lift", targetPosTwoBarLift);
             telemetry.addData("AutoLevelTarget", autoLevelTarget);
             telemetry.addData("Placement Mode", placementMode);
+            telemetry.addData("t10", t10.seconds());
             telemetry.update();
         }
     }
