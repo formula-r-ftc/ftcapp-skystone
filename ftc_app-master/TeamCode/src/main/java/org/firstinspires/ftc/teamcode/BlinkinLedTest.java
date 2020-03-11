@@ -11,6 +11,7 @@ public class BlinkinLedTest extends LinearOpMode {
     private DcMotor IntakeL;
     private RevBlinkinLedDriver blinkin;
     private RevBlinkinLedDriver.BlinkinPattern IntakeOn;
+    private RevBlinkinLedDriver.BlinkinPattern SlowIntakeOn;
     private RevBlinkinLedDriver.BlinkinPattern OutakeOn;
     private RevBlinkinLedDriver.BlinkinPattern IntakeNOutakeOff;
 
@@ -20,34 +21,69 @@ public class BlinkinLedTest extends LinearOpMode {
     private boolean toggleOutakeBoolean = false;
 
     private void IntakeToggle(){
-        if (gamepad1.left_stick_button && t1.seconds() > 0.5 || gamepad2.left_trigger > 0.5 && t1.seconds() > 0.5 ){
+        if (gamepad2.left_trigger > 0.5 && t1.seconds() > 0.5 ){
             t1.reset();
-            if (!toggleIntakeBoolean){
+            toggleIntakeBoolean = true;
+            toggleOutakeBoolean = false;
+        }
+    }
+
+    private void IntakeButtons(){
+        if (gamepad1.a && t1.seconds() > 0.5 ){
+            toggleIntakeBoolean = true;
+            toggleOutakeBoolean = false;
+        }
+        else if (gamepad1.b){
+            toggleIntakeBoolean = false;
+            toggleOutakeBoolean = true;
+        }
+        else if (gamepad1.x){
+            toggleIntakeBoolean = false;
+            toggleOutakeBoolean = false;
+        }
+    }
+
+    private void intakeControl(){
+        if (!gamepad1.right_bumper) {
+            if (toggleIntakeBoolean) {
+                blinkin.setPattern(IntakeOn);
                 IntakeL.setPower(0.5);
                 IntakeR.setPower(-0.5);
-                toggleIntakeBoolean=true;
-            } else if (toggleIntakeBoolean){
-                IntakeL.setPower(0);
-                IntakeR.setPower(0);
-                toggleIntakeBoolean=false;
+            } else if (toggleOutakeBoolean) {
+                blinkin.setPattern(OutakeOn);
+                IntakeL.setPower(-0.5);
+                IntakeR.setPower(0.5);
+            } else if (!toggleIntakeBoolean && !toggleOutakeBoolean) {
+                blinkin.setPattern(IntakeNOutakeOff);
+                IntakeL.setPower(0.0);
+                IntakeR.setPower(0.0);
+            }
+        }
+        else{
+            if (toggleIntakeBoolean) {
+                blinkin.setPattern(SlowIntakeOn);
+                IntakeL.setPower(0.3);
+                IntakeR.setPower(-0.3);
+            } else if (toggleOutakeBoolean) {
+                blinkin.setPattern(OutakeOn);
+                IntakeL.setPower(-0.5);
+                IntakeR.setPower(0.5);
+            } else if (!toggleIntakeBoolean && !toggleOutakeBoolean) {
+                blinkin.setPattern(IntakeNOutakeOff);
+                IntakeL.setPower(0.0);
+                IntakeR.setPower(0.0);
             }
         }
     }
 
     private void OutakeToggle(){
-        if (gamepad1.right_stick_button && t1.seconds() > 0.5 || gamepad2.right_trigger > 0.5 && t1.seconds() > 0.5 ){
+        if (gamepad2.right_trigger > 0.5 && t1.seconds() > 0.5 ){
             t1.reset();
-            if (!toggleOutakeBoolean){
-                IntakeL.setPower(-0.5);
-                IntakeR.setPower(0.5);
-                toggleOutakeBoolean=true;
-            } else if (toggleOutakeBoolean){
-                IntakeL.setPower(0);
-                IntakeR.setPower(0);
-                toggleOutakeBoolean=false;
-            }
+            toggleOutakeBoolean=true;
+            toggleIntakeBoolean=false;
         }
     }
+
     @Override
     public void runOpMode() {
         blinkin = hardwareMap.get(RevBlinkinLedDriver.class, "blinky");
@@ -55,22 +91,15 @@ public class BlinkinLedTest extends LinearOpMode {
         IntakeL = hardwareMap.get(DcMotor.class, "IntakeL");
         IntakeNOutakeOff = RevBlinkinLedDriver.BlinkinPattern.WHITE;
         IntakeOn = RevBlinkinLedDriver.BlinkinPattern.RED;
-        OutakeOn = RevBlinkinLedDriver.BlinkinPattern.GREEN;
+        OutakeOn = RevBlinkinLedDriver.BlinkinPattern.GOLD;
+        SlowIntakeOn = RevBlinkinLedDriver.BlinkinPattern.STROBE_RED;
         waitForStart();
         while (opModeIsActive()) {
 
             IntakeToggle();
             OutakeToggle();
-
-            if (!toggleIntakeBoolean && !toggleOutakeBoolean){
-                blinkin.setPattern(IntakeNOutakeOff);
-            }
-            else if (toggleIntakeBoolean){
-                blinkin.setPattern(IntakeOn);
-            }
-            else if (toggleOutakeBoolean) {
-                blinkin.setPattern(OutakeOn);
-            }
+            IntakeButtons();
+            intakeControl();
         }
     }
 }
