@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 @Autonomous
 
-public class OneStoneFoundationRed extends OpMode{
+public class OneStoneRed extends OpMode{
 
 
     BNO055IMU imu;
@@ -30,6 +30,8 @@ public class OneStoneFoundationRed extends OpMode{
     private Servo clamperR;
     private Servo stoneArmL;
     private Servo stoneArmClampL;
+    private Servo stoneArmR;
+    private Servo stoneArmClampR;
 
 
     private ElapsedTime t1 = new ElapsedTime();
@@ -291,9 +293,9 @@ public class OneStoneFoundationRed extends OpMode{
     boolean resetA4 = true;
     private void moveClampsDown(){
 
-        while (t4.seconds() < 0.5){
-            clamperL.setPosition(0.75);
-            clamperR.setPosition(0.0);
+        while (t4.seconds() < 0.75){
+            clamperL.setPosition(0.0);
+            clamperR.setPosition(0.75);
             resetA4 = false;
         }
         if (!resetA4)
@@ -303,9 +305,9 @@ public class OneStoneFoundationRed extends OpMode{
     boolean resetA5 = true;
     private void moveClampsUp(){
 
-        while (t5.seconds() < 0.5){
-            clamperL.setPosition(0.0);
-            clamperR.setPosition(0.75);
+        while (t5.seconds() < 0.75){
+            clamperL.setPosition(0.75);
+            clamperR.setPosition(0.0);
             resetA5 = false;
         }
         if (!resetA5)
@@ -321,7 +323,7 @@ public class OneStoneFoundationRed extends OpMode{
 
     boolean grab = false;
     private void grabSkystone() {
-        stoneArmClampL.setPosition(1.0);
+        stoneArmClampR.setPosition(0.0);
         if (t8.seconds() > 1.5){
             grab = true;
         }
@@ -338,8 +340,8 @@ public class OneStoneFoundationRed extends OpMode{
     boolean MoveArmDown = false;
 
     private void moveArmDown() {
-        stoneArmL.setPosition(0.4);
-        stoneArmClampL.setPosition(0.3);
+        stoneArmR.setPosition(0.0);
+        stoneArmClampR.setPosition(0.3);
         if (t12.seconds() > 1.0){
             MoveArmDown = true;
         }
@@ -378,8 +380,8 @@ public class OneStoneFoundationRed extends OpMode{
     private boolean safe = false;
 
     private void keepSkystone() {
-        stoneArmL.setPosition(0.15);
-        stoneArmClampL.setPosition(1.0);
+        stoneArmR.setPosition(0.0);
+        stoneArmClampR.setPosition(0.4);
         safe = true;
     }
 
@@ -417,8 +419,8 @@ public class OneStoneFoundationRed extends OpMode{
         sensorColor = hardwareMap.get(ColorSensor.class, "Color");
         clamperL = hardwareMap.get(Servo.class, "clamperL");
         clamperR = hardwareMap.get(Servo.class, "clamperR");
-        stoneArmClampL = hardwareMap.get(Servo.class, "stoneArmClampL");
-        stoneArmL = hardwareMap.get(Servo.class, "stoneArmL");
+        stoneArmClampR = hardwareMap.get(Servo.class, "stoneArmClampR");
+        stoneArmR = hardwareMap.get(Servo.class, "stoneArmR");
         imu = hardwareMap.get(BNO055IMU.class, "emu");
 
         LFMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -511,7 +513,7 @@ public class OneStoneFoundationRed extends OpMode{
     private boolean senseBlue = false;
 
     double moveBack1 = 1.5/13.0;
-    double moveForward1 = 120.0/13.0;
+    double moveForward1 = 70.0/13.0;
     double moveBack2 = 86.0/13.0;
     double moveForward2 = 94.0/13.0;
     double offset = 8.0/13.0;
@@ -527,9 +529,10 @@ public class OneStoneFoundationRed extends OpMode{
         if (!MoveArmDown){
             moveArmDown();
         }
-        else if (!trip1) {
-            rampUpSide(one*-2.6, 0.0, 0.5, 0.85);
-            trip1 = tripLoopSideways(one*-2.6);
+        //else
+        if (!trip1) {
+            rampUpSide(-one*2.7, 0.0, 0.5, 0.85);
+            trip1 = tripLoopSideways(-one*2.7);
             if (trip1){
                 t8.reset();
             }
@@ -541,19 +544,19 @@ public class OneStoneFoundationRed extends OpMode{
             keepSkystone();
         }
         else if (!trip3) {
-            rampUpSide(one*1.0, 0.0, 0.5, 0.85);
-            trip3 = tripLoopSideways(one*1.0);
+            rampUpSide(one*0.85, 0.0, 0.5, 0.85);
+            trip3 = tripLoopSideways(one*0.85);
         }
         else if (!trip4) {
-            rampUp(-(one*moveForward1+600), 0.0, 0.5, 0.85);
-            trip4 = tripLoop(-(one*moveForward1+600));
+            rampUp(-one*moveForward1, 0.0, 0.5, 0.85);
+            trip4 = tripLoop(-one*moveForward1);
             if(trip4){
                 t1.reset();
             }
         }
         else if  (!trip5) {
-            rampUpSide(-(one*1.75), 0.0, 0.5, 0.85);
-            trip5 = tripLoopSideways(-(one*1.75));
+            rampUpSide(-one*1.75, 0.0, 0.5, 0.85);
+            trip5 = tripLoopSideways(-one*1.75);
             if(trip5){
                 t1.reset();
                 t9.reset();
@@ -567,14 +570,14 @@ public class OneStoneFoundationRed extends OpMode{
             if(up){
                 t1.reset();
             }
-        }
+        }/*
         else if (!trip6) {
-            rampUpTurn(90.0, 0.5, 0.5);
-            trip6 = tripLoopTurn(90.0);
+            rampUpTurn(-90.0, 0.5, 0.5);
+            trip6 = tripLoopTurn(-90.0);
         }
         else if  (!trip7) {
-            rampUp(one*0.3, -90.0, 0.5, 0.25);
-            trip7 = tripLoop(one*0.3);
+            rampUp(one*-0.35, -90.0, 0.5, 0.25);
+            trip7 = tripLoop(one*-0.35);
             if(trip7){
                 t1.reset();
                 t4.reset();
@@ -587,23 +590,24 @@ public class OneStoneFoundationRed extends OpMode{
             }
         }
         else if(!trip8){
-            rampUp(-(one*1.75), -90, 0.5, 0.85);
-            trip8 = tripLoop(-(one*1.75));
+            rampUp(one*1.75, -90, 0.5, 0.85);
+            trip8 = tripLoop(one*1.75);
             if(trip8){
                 t1.reset();
+                t4.reset();
             }
         }
         else if(!trip9) {
-            rampUpTurn(175.0, 0.5, 0.5);
-            trip9 = tripLoopTurn(175.0);
+            rampUpTurn(0, 0.5, 0.5);
+            trip9 = tripLoopTurn(0);
             if(trip9){
                 t1.reset();
             }
         }
 
         else if(!trip10) {
-            rampUp(one*1.0, -175.0 ,0.5, 0.85);
-            trip10 = tripLoop(one*1.0);
+            rampUp(-one, 0,0.5, 0.85);
+            trip10 = tripLoop(-one);
             if(trip10){
                 t5.reset();
             }
@@ -613,18 +617,96 @@ public class OneStoneFoundationRed extends OpMode{
             if(clampUp){
                 t1.reset();
             }
-        }
+        }*/
         else if (!trip12){
-            rampUp(-(one*1.7), -175.0, 0.5, 0.85);
-            trip12 = tripLoop(-(one*1.7));
+            rampUp(one*1.6, 0.0, 0.5, 0.85);
+            trip12 = tripLoop(one*1.6);
             if(trip12){
                 t1.reset();
             }
         }
+        /*else if (!grabTwo){
+            grabSkystoneTwo();
+        }*/
 
-        else if (!grabTwo){
+        /*
+        else if (!trip11){
+            rampUpSide(one*1.5, 0, 0.5, 0.85);
+            trip11 = tripLoopSideways(one*1.5);
+            if(trip11){
+                 t1.reset();
+            }
+        }
+        //Second Skystone
+        /*else if (!trip10) {
+            rampUp((one*moveBack2)-300, 0.0, 0.5, 0.85);
+            trip10 = tripLoop((one*moveBack2)-300);
+        }
+        else if (!MoveArmDownTwo) {
+            moveArmDownTwo();
+            if (MoveArmDownTwo){
+                t1.reset();
+            }
+        }
+        else if (!trip11){
+            rampUpSide(one*1.0, 0.0, 0.5, 0.75);
+            trip11 = tripLoopSideways(one*1.0);
+            if (trip11){
+                t8.reset();
+            }
+        }
+        else if (!grabTwo) {
             grabSkystoneTwo();
         }
+        else if (!safeTwo) {
+            keepSkystoneTwo();
+            if(safeTwo){
+                t1.reset();
+            }
+        }
+        else if (!trip12) {
+            rampUp(-one*moveForward2, 0.0, 0.5, 0.85);
+            trip12 = tripLoop(-one*moveForward2);
+            if(trip12){
+                t1.reset();
+            }
+        }
+        else if (!trip13) {
+            rampUpSide(one*1.5, 0.0, 0.5, 0.85);
+            trip13 = tripLoopSideways(one*1.5);
+            if(trip13){
+                t9.reset();
+            }
+        }
+        else if (!dropTwo) {
+            dropSkystoneTwo();
+        }
+        else if (!upTwo){
+            keepArmUpTwo();
+            if(upTwo){
+                t1.reset();
+            }
+        }
+        else if (!trip14) {
+            rampUpSide(-one*1.5, 0.0, 0.5, 0.85);
+            trip14 = tripLoopSideways(-one*1.5);
+            if(trip14){
+                t1.reset();
+            }
+        }
+        else if (!trip15) {
+            rampUp(-one*1.75, 0.0, 0.5, 0.85);
+            trip15 = tripLoop(-one*1.75);
+            if(trip15){
+                t1.reset();
+            }
+        }
+        else if (!trip11){
+            rampUp(one*1.75, 0.0, 0.5, 0.85);
+            trip11 = tripLoop(one*1.75);
+        }*/
+
+
 
         telemetry.addData("Drop",drop);
         telemetry.addData("Avg Encoder Position", ((LFMotor.getCurrentPosition() - LFPreviousValue) + (RBMotor.getCurrentPosition() - RBPreviousValue) - (RFMotor.getCurrentPosition() - RFPreviousValue) - (LBMotor.getCurrentPosition() - LBPreviousValue)) / 4);

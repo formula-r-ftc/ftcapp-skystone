@@ -387,7 +387,7 @@ public class TeleOpToggle extends LinearOpMode {
             }
             else {
                 BlockPusher.setPosition(0.05);
-            } 
+            }
             toggle();
             LinearSlide.setPower(linearSlideEncSpeed(targetPosLinearSlide, 0.75));
             twoBarLift.setPower(twoBarLiftEncSpeed(targetPosTwoBarLift, 0.75));
