@@ -27,8 +27,8 @@ public class ThreeStoneRed extends OpMode{
     private ColorSensor sensorColor;
     private Servo clamperL;
     private Servo clamperR;
-    private Servo stoneArmL;
-    private Servo stoneArmClampL;
+    private Servo stoneArmR;
+    private Servo stoneArmClampR;
 
 
     private ElapsedTime t1 = new ElapsedTime();
@@ -116,7 +116,7 @@ public class ThreeStoneRed extends OpMode{
     }
 
     private void rampUp(double length, double heading, double time, double maxSpeed) {
-        double AccelerationSlope = maxSpeed / time;
+        double AccelerationSlope = (length/Math.abs(length))*(maxSpeed / time);
         double power = t1.seconds() * AccelerationSlope;
         if (Math.abs(power) < Math.abs(encoderSpeed(length, maxSpeed))) {
             setTurnPower(turn(heading), power);
@@ -144,7 +144,7 @@ public class ThreeStoneRed extends OpMode{
 
     private void rampUpSide(double length, double heading, double time, double maxSpeed) {
 
-        double AccelerationSlope = maxSpeed / time;
+        double AccelerationSlope = (length/Math.abs(length))*(maxSpeed / time);
         double power = t1.seconds() * AccelerationSlope;
         if (Math.abs(power) < Math.abs(encoderSpeedSide(length, maxSpeed))) {
             driveSideways(turn(heading), power);
@@ -280,7 +280,7 @@ public class ThreeStoneRed extends OpMode{
 
     boolean grab = false;
     private void grabSkystone() {
-        stoneArmClampL.setPosition(1.0);
+        stoneArmClampR.setPosition(0.0);
         if (t8.seconds() > 0.75){
             grab = true;
         }
@@ -288,7 +288,7 @@ public class ThreeStoneRed extends OpMode{
 
     boolean grabTwo = false;
     private void grabSkystoneTwo() {
-        stoneArmClampL.setPosition(1.0);
+        stoneArmClampR.setPosition(0.0);
         if (t8.seconds() > 0.75){
             grabTwo = true;
         }
@@ -297,8 +297,8 @@ public class ThreeStoneRed extends OpMode{
     boolean MoveArmDown = false;
 
     private void moveArmDown() {
-        stoneArmL.setPosition(1.0);
-        stoneArmClampL.setPosition(0.5);
+        stoneArmR.setPosition(0.0);
+        stoneArmClampR.setPosition(0.3);
         if (t12.seconds() > 0.65){
             MoveArmDown = true;
         }
@@ -308,8 +308,8 @@ public class ThreeStoneRed extends OpMode{
     boolean MoveArmDownTwo = false;
 
     private void moveArmDownTwo() {
-        stoneArmL.setPosition(1.0);
-        stoneArmClampL.setPosition(0.5);
+        stoneArmR.setPosition(0.0);
+        stoneArmClampR.setPosition(0.3);
         if (t6.seconds() > 0.65){
             MoveArmDownTwo = true;
         }
@@ -318,14 +318,14 @@ public class ThreeStoneRed extends OpMode{
     private boolean drop = false;
 
     private void dropSkystone() {
-        stoneArmL.setPosition(0.8);
+        stoneArmR.setPosition(0.3);
         if (t9.seconds() > 0.7){
             drop = true;
         }
     }
     private boolean dropA = false;
     private void dropSkystoneFully() {
-        stoneArmClampL.setPosition(0.3);
+        stoneArmClampR.setPosition(0.3);
         if (t9.seconds() > 0.5){
             dropA = true;
         }
@@ -333,7 +333,7 @@ public class ThreeStoneRed extends OpMode{
 
     private boolean dropTwo = false;
     private void dropSkystoneTwo() {
-        stoneArmL.setPosition(0.8);
+        stoneArmR.setPosition(0.3);
         if (t9.seconds() >0.75){
             dropTwo = true;
         }
@@ -341,7 +341,7 @@ public class ThreeStoneRed extends OpMode{
 
     private boolean dropFullyTwo = false;
     private void dropSkystoneFullyTwo() {
-        stoneArmClampL.setPosition(0.3);
+        stoneArmClampR.setPosition(0.3);
         if (t9.seconds() > 0.5){
             dropFullyTwo = true;
         }
@@ -350,35 +350,32 @@ public class ThreeStoneRed extends OpMode{
     private boolean safe = false;
 
     private void keepSkystone() {
-        stoneArmL.setPosition(0.65);
-        stoneArmClampL.setPosition(1.0);
-        safe = true;
+        stoneArmR.setPosition(0.5);
+        stoneArmClampR.setPosition(0.0);
+        if (t9.seconds() > 0.55){
+            safe = true;
+        }
     }
 
     private boolean safeTwo = false;
 
     private void keepSkystoneTwo() {
-        stoneArmL.setPosition(0.65);
-        stoneArmClampL.setPosition(1.0);
+        stoneArmR.setPosition(0.5);
+        stoneArmClampR.setPosition(0.0);
         safeTwo = true;
     }
 
     boolean up = false;
     private void keepArmUp() {
-        stoneArmL.setPosition(0.5);
+        stoneArmR.setPosition(0.4);
         up = true;
     }
 
     boolean upTwo = false;
     private void keepArmUpTwo() {
-        stoneArmL.setPosition(0.5);
+        stoneArmR.setPosition(0.4);
         upTwo = true;
     }
-
-    private void skystoneFinder(){
-
-    }
-
 
     @Override
     public void init() {
@@ -393,8 +390,8 @@ public class ThreeStoneRed extends OpMode{
         sensorColor = hardwareMap.get(ColorSensor.class, "Color");
         clamperL = hardwareMap.get(Servo.class, "clamperL");
         clamperR = hardwareMap.get(Servo.class, "clamperR");
-        stoneArmClampL = hardwareMap.get(Servo.class, "stoneArmClampR");
-        stoneArmL = hardwareMap.get(Servo.class, "stoneArmR");
+        stoneArmClampR = hardwareMap.get(Servo.class, "stoneArmClampR");
+        stoneArmR = hardwareMap.get(Servo.class, "stoneArmR");
         imu = hardwareMap.get(BNO055IMU.class, "emu");
 
         LFMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -507,11 +504,11 @@ public class ThreeStoneRed extends OpMode{
         }
         else if (!SkystoneFound){
             if (detectSkyStonePattern() == 3) {
-                rampUp(one * 2 * 0.7, 0, 0.5, 0.5);
+                rampUp(one * 2 * 0.7, 0, 0.5, 0.65);
                 SkystoneFound = tripLoop(one * 2 * 0.7);
             }
             else if (detectSkyStonePattern() == 2){
-                rampUp(one*0.7, 0, 0.5, 0.5);
+                rampUp(one*0.7, 0, 0.5, 0.65);
                 SkystoneFound = tripLoop(one*0.7);
             }
             else {
@@ -522,8 +519,8 @@ public class ThreeStoneRed extends OpMode{
             }
         }
         else if (!trip1) {
-            rampUpSide(one*2.45, 0.0, 0.75, 0.5);
-            trip1 = tripLoopSideways(one*2.45);
+            rampUpSide(-one*2.5, 0.0, 0.75, 0.5);
+            trip1 = tripLoopSideways(-one*2.5);
             if (trip1){
                 t8.reset();
             }
@@ -538,15 +535,15 @@ public class ThreeStoneRed extends OpMode{
             }
         }
         else if (!trip2) {
-            rampUpSide(-one*0.55, 0.0, 0.75, 0.6);
-            trip2 = tripLoopSideways(-one*0.55);
+            rampUpSide(one*0.55, 0.0, 0.75, 0.65);
+            trip2 = tripLoopSideways(one*0.55);
             if (trip2){
                 t1.reset();
             }
         }
         else if (!trip3) {
-            rampUp(-((one*moveForward1)-1000), 0.0, 0.75, 0.7);
-            trip3 = tripLoop(-((one*moveForward1)-1000));
+            rampUp(-((one*moveForward1)-1900), 0.0, 0.75, 0.7);
+            trip3 = tripLoop(-((one*moveForward1)-1900));
             if(trip3){
                 t9.reset();
             }
@@ -559,6 +556,9 @@ public class ThreeStoneRed extends OpMode{
         }
         else if (!dropA){
             dropSkystoneFully();
+            if (dropA){
+                t9.reset();
+            }
         }
         else if (!up){
             keepArmUp();
@@ -570,16 +570,16 @@ public class ThreeStoneRed extends OpMode{
         //Second Skystone
         else if (!trip4) {
             if (detectSkyStonePattern() == 1) {
-                rampUp(one * 4.5 + offset, 0.0, 0.5, 0.7);
-                trip4 = tripLoop(one * 4.5 + offset);
-            }
-            if (detectSkyStonePattern() == 2){
-                rampUp(one * 5.5 + offset, 0.0, 0.5, 0.6);
+                rampUp(one * 5.5 + offset, 0.0, 0.5, 0.75);
                 trip4 = tripLoop(one * 5.5 + offset);
             }
+            if (detectSkyStonePattern() == 2){
+                rampUp(one * 6.5 + offset, 0.0, 0.5, 0.75);
+                trip4 = tripLoop(one * 6.5 + offset);
+            }
             if (detectSkyStonePattern() == 3){
-                rampUp(one * 5.9 + offset, 0.0, 0.5, 0.6);
-                trip4 = tripLoop(one * 5.9 + offset);
+                rampUp(one * 7.5 + offset, 0.0, 0.5, 0.75);
+                trip4 = tripLoop(one * 7.5 + offset);
             }
             if (trip4){
                 t6.reset();
@@ -592,14 +592,17 @@ public class ThreeStoneRed extends OpMode{
             }
         }
         else if (!trip5){
-            rampUpSide(one*1.65, 0.0, 0.5, 0.5);
-            trip5 = tripLoopSideways(one*1.65);
+            rampUpSide(-one*1.65, 0.0, 0.5, 0.55);
+            trip5 = tripLoopSideways(-one*1.65);
             if (trip5){
                 t8.reset();
             }
         }
         else if (!grabTwo) {
             grabSkystoneTwo();
+            if (grabTwo){
+                t9.reset();
+            }
         }
         else if (!safeTwo) {
             keepSkystoneTwo();
@@ -608,23 +611,23 @@ public class ThreeStoneRed extends OpMode{
             }
         }
         else if (!trip6){
-            rampUpSide(-one*0.75, 0, 0.5, 0.5);
-            trip6 = tripLoopSideways(-one*0.75);
+            rampUpSide(one*0.75, 0, 0.5, 0.65);
+            trip6 = tripLoopSideways(one*0.75);
             if (trip6){
                 t1.reset();
             }
         }
         else if (!trip7) {
             if (detectSkyStonePattern() == 1) {
-                rampUp(-(one * 4.6 + offset), 0.0, 0.5, 0.7);
-                trip7 = tripLoop((-(one * 4.6 + offset)));
+                rampUp(-(one * 3.9 + offset), 0.0, 0.5, 0.85);
+                trip7 = tripLoop((-(one * 3.9 + offset)));
             } else if (detectSkyStonePattern() == 2) {
-                rampUp(-(one * 5.6 + offset), 0.0, 0.5, 0.7);
-                trip7 = tripLoop((-(one * 5.6 + offset)));
+                rampUp(-(one * 4.9 + offset), 0.0, 0.5, 0.85);
+                trip7 = tripLoop((-(one * 4.9 + offset)));
             }
             else if (detectSkyStonePattern() == 3){
-                rampUp(-(one * 6.6 + offset), 0.0, 0.5, 0.7);
-                trip7 = tripLoop((-(one * 6.6 + offset)));
+                rampUp(-(one * 5.9 + offset), 0.0, 0.5, 0.85);
+                trip7 = tripLoop((-(one * 5.9 + offset)));
             }
             if(trip7){
                 t1.reset();
@@ -646,11 +649,8 @@ public class ThreeStoneRed extends OpMode{
             }
         }
         else if (!trip8){
-            rampUp(one*0.5, 0, 0.5, 0.6);
-            trip8 = tripLoop(one*0.5);
-        }
-        else{
-            rampUp(0.0, 0, 0.0, 0.1);
+            rampUp(one, 0, 0.5, 0.6);
+            trip8 = tripLoop(one);
         }
 
         telemetry.addData("Avg Encoder Position", ((LFMotor.getCurrentPosition() - LFPreviousValue) + (RBMotor.getCurrentPosition() - RBPreviousValue) - (RFMotor.getCurrentPosition() - RFPreviousValue) - (LBMotor.getCurrentPosition() - LBPreviousValue)) / 4);
