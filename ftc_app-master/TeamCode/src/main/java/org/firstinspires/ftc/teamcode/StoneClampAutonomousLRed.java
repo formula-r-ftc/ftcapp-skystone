@@ -51,6 +51,7 @@ public class StoneClampAutonomousLRed extends OpMode{
     final float values[] = hsvValues;
     final double SCALE_FACTOR = 255;
 
+
     private void moveToPosition(double targetPosition) {
         double difference = targetPosition - RFMotor.getCurrentPosition();
         telemetry.addData("difference", difference);
